@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "title": "E-Commerce Platform",
+        "category": "Web Development",
+        "image": "https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "link": "#"
+    },
+    {
+        "id": 2,
+        "title": "Academic Diary App",
+        "category": "Android & PHP",
+        "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "link": "#"
+    },
+    {
+        "id": 3,
+        "title": "AI Image Generator",
+        "category": "Python",
+        "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "link": "#"
+    }
+]
