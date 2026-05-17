@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Someshwar Songara | Developer Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="blob-bg"></div>
+    
+    <nav class="glass-nav">
+        <div class="logo">SS.</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <span class="greeting">Hello, world! I am</span>
+                <h1 class="name">Someshwar Songara</h1>
+                <h2 class="title">
+                    <span class="typing-text">Software Developer & CSE Student</span>
+                </h2>
+                <p class="hero-description">Passionate about Web and Android applications. Currently turning ideas into reality through code at MIT Group of Institutes.</p>
+                <div class="cta-buttons">
+                    <a href="#about" class="btn primary">Explore My Work</a>
+                    <a href="https://github.com/someshwar-songara" target="_blank" class="btn secondary"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="glass-card profile-card">
+                    <div class="code-window">
+                        <div class="window-header">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <pre><code><span class="keyword">const</span> developer = {
+    name: <span class="string">"Someshwar Songara"</span>,
+    role: <span class="string">"B.Tech CSE Student"</span>,
+    passions: [<span class="string">"Web"</span>, <span class="string">"Android"</span>],
+    isAvailableForHire: <span class="keyword">true</span>
+};
+
+<span class="function">developer</span>.<span class="method">buildAwesomeThings</span>();</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <h2 class="section-title">About <span>Me</span></h2>
+            <div class="about-grid">
+                <div class="glass-card about-text">
+                    <p>I’m a dedicated B.Tech. student in Computer Science and Engineering with a strong passion for software development. I continuously develop my technical skills through hands-on projects and practical learning.</p>
+                    <p>My journey in tech is driven by a curiosity to understand how things work under the hood and a desire to build solutions that matter. I am motivated, eager to learn, and actively expanding my experience in software engineering and modern development practices.</p>
+                    
+                    <div class="education-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <h3>B.Tech Computer Science & Engineering</h3>
+                                <h4>MIT Group of Institutes, Ujjain</h4>
+                                <span class="date">2025 – 2028</span>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <h3>Diploma in Computer Science</h3>
+                                <h4>Govt. Polytechnic College</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="skills-section">
+            <h2 class="section-title">My <span>Skills</span></h2>
+            <div class="skills-grid">
+                <div class="glass-card skill-card">
+                    <i class="fab fa-java"></i>
+                    <h3>Java</h3>
+                    <div class="progress-bar"><div class="progress" style="width: 85%;"></div></div>
+                </div>
+                <div class="glass-card skill-card">
+                    <i class="fab fa-python"></i>
+                    <h3>Python</h3>
+                    <div class="progress-bar"><div class="progress" style="width: 80%;"></div></div>
+                </div>
+                <div class="glass-card skill-card">
+                    <i class="fas fa-code"></i>
+                    <h3>C / C++</h3>
+                    <div class="progress-bar"><div class="progress" style="width: 75%;"></div></div>
+                </div>
+                <div class="glass-card skill-card">
+                    <i class="fab fa-android"></i>
+                    <h3>Android Dev</h3>
+                    <div class="progress-bar"><div class="progress" style="width: 70%;"></div></div>
+                </div>
+                <div class="glass-card skill-card">
+                    <i class="fab fa-html5"></i>
+                    <h3>HTML / CSS / JS</h3>
+                    <div class="progress-bar"><div class="progress" style="width: 90%;"></div></div>
+                </div>
+                <div class="glass-card skill-card">
+                    <i class="fas fa-database"></i>
+                    <h3>PHP & MySQL</h3>
+                    <div class="progress-bar"><div class="progress" style="width: 80%;"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <div class="glass-card contact-card">
+                <h2>Let's <span>Connect</span></h2>
+                <p>I'm currently looking for new opportunities and collaborations. Whether you have a question or just want to say hi, I'll try my best to get back to you!</p>
+                <div class="social-links">
+                    <a href="https://github.com/someshwar-songara" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/someshwar-songara/" target="_blank" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <a href="mailto:contact@example.com" class="btn primary mt-4">Say Hello</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Built with ❤️ by Someshwar Songara</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
