@@ -5,6 +5,14 @@
  * Deployment ID: AKfycbyWm9_PaLQRyu8Aq6ETTKzrmD3Ut4D8i1BPupZaI6Lj-Bj0Uo-BloCv4qdoHgrrJw
  */
 
+// 1. GET endpoint (visiting the URL in a browser confirms the script is alive)
+function doGet(e) {
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: "success", message: "Google Apps Script is active and working!" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// 2. POST endpoint (receives the form data from your portfolio)
 function doPost(e) {
   var lock = LockService.getScriptLock();
   lock.tryLock(10000); // Wait up to 10 seconds to avoid simultaneous write collisions
@@ -18,16 +26,16 @@ function doPost(e) {
       sheet.getRange("A1:D1").setFontWeight("bold");
     }
 
-    // Support both FormData (URL-encoded / multipart) and JSON payloads
+    // Support both URL-encoded form data and JSON payloads
     var data = {};
+    if (e.parameter) {
+      data = e.parameter;
+    }
     if (e.postData && e.postData.contents) {
       try {
-        data = JSON.parse(e.postData.contents);
-      } catch (err) {
-        data = e.parameter || {};
-      }
-    } else if (e.parameter) {
-      data = e.parameter;
+        var parsed = JSON.parse(e.postData.contents);
+        data = Object.assign(data, parsed);
+      } catch (err) {}
     }
 
     var timestamp = new Date();
@@ -50,4 +58,10 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+// 3. Test function (click 'Run' on this in Apps Script editor to authorize permissions)
+function test() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  sheet.appendRow([new Date(), "Test Name", "test@example.com", "Test Message from test()"]);
 }
