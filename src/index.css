@@ -2920,3 +2920,184 @@ body[data-theme="dark"] .modern-footer {
   transition: top .2s;
 }
 .skip-link:focus { top: 0; }
+
+/* ── Contact Form Delight & Celebration Animations ──────── */
+@keyframes flyAirplane {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateX(5px) translateY(-4px) rotate(14deg);
+  }
+  100% {
+    transform: translateX(9px) translateY(-6px) rotate(8deg);
+  }
+}
+
+.plane-takeoff {
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-size: 1.25rem;
+  animation: flyAirplane 0.7s ease-in-out infinite alternate;
+}
+
+.contact-submit {
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.contact-submit.is-submitting {
+  opacity: 0.88;
+  cursor: wait;
+}
+
+.submit-arrow {
+  margin-left: 0.35rem;
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.contact-submit:hover .submit-arrow {
+  transform: translateX(4px) scale(1.15);
+}
+
+/* Postcard Success State */
+@keyframes stampIn {
+  0% {
+    opacity: 0;
+    transform: scale(2.4) rotate(-24deg);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(0.94) rotate(-6deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-8deg);
+  }
+}
+
+@keyframes popCardIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes floatEnvelope {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(4deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+.contact-success-box {
+  position: relative;
+  background: var(--sticky-yellow);
+  border: 2px dashed rgba(28, 25, 23, 0.24);
+  border-radius: 16px;
+  padding: 2.4rem 1.8rem 2rem;
+  text-align: center;
+  margin-top: 0.8rem;
+  box-shadow: 0 14px 30px rgba(28, 25, 23, 0.12);
+  animation: popCardIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  overflow: hidden;
+}
+
+.contact-stamp {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-family: var(--font-hand);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  color: var(--green-pen);
+  border: 2.5px solid var(--green-pen);
+  padding: 0.25rem 0.65rem;
+  border-radius: 8px;
+  text-transform: uppercase;
+  background: rgba(34, 197, 94, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.2);
+  animation: stampIn 0.5s 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.contact-success-icon {
+  font-size: 3.4rem;
+  line-height: 1;
+  margin-bottom: 0.8rem;
+  display: inline-block;
+  animation: floatEnvelope 2.4s ease-in-out infinite;
+}
+
+.contact-success-title {
+  font-family: var(--font-hand);
+  font-size: 1.95rem;
+  font-weight: 700;
+  color: var(--ink-dark);
+  margin: 0 0 0.5rem;
+}
+
+.contact-success-desc {
+  font-family: var(--font-hand);
+  font-size: 1.28rem;
+  color: var(--ink-mid);
+  line-height: 1.55;
+  margin: 0 0 1.5rem;
+}
+
+.contact-send-another {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background: var(--ink-dark);
+  color: #fff;
+  font-family: var(--font-hand);
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.65rem 1.35rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(28, 25, 23, 0.16);
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-send-another:hover {
+  transform: translateY(-2.5px) scale(1.02);
+  background: #332d29;
+  box-shadow: 0 10px 22px rgba(28, 25, 23, 0.22);
+}
+
+body[data-theme="dark"] .contact-success-box {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+}
+
+body[data-theme="dark"] .contact-success-title {
+  color: #f8fafc;
+}
+
+body[data-theme="dark"] .contact-success-desc {
+  color: #cbd5e1;
+}
+
+body[data-theme="dark"] .contact-send-another {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+body[data-theme="dark"] .contact-send-another:hover {
+  background: #e2e8f0;
+}

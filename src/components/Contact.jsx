@@ -1,19 +1,58 @@
 import { useState } from 'react';
+import confetti from 'canvas-confetti';
 
 export default function Contact() {
   const [isSent, setIsSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null);
+  const [lastSender, setLastSender] = useState('');
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
   const contactGithub = 'https://github.com/someshwar-songara';
   const contactLinkedin = 'https://www.linkedin.com/in/someshwar-songara/';
   const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbyWm9_PaLQRyu8Aq6ETTKzrmD3Ut4D8i1BPupZaI6Lj-Bj0Uo-BloCv4qdoHgrrJw/exec';
 
+  const triggerCelebration = () => {
+    // 1. Center blast
+    confetti({
+      particleCount: 75,
+      spread: 65,
+      origin: { y: 0.65 },
+      colors: ['#22c55e', '#facc15', '#f43f5e', '#3b82f6', '#a855f7'],
+      disableForReducedMotion: true
+    });
+
+    // 2. Left side cannon
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0.1, y: 0.7 },
+        colors: ['#22c55e', '#eab308', '#38bdf8', '#fb7185'],
+        disableForReducedMotion: true
+      });
+    }, 200);
+
+    // 3. Right side cannon
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 120,
+        spread: 55,
+        origin: { x: 0.9, y: 0.7 },
+        colors: ['#22c55e', '#f97316', '#a855f7', '#60a5fa'],
+        disableForReducedMotion: true
+      });
+    }, 380);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setStatusMessage(null);
+
+    const nameSaved = formData.name;
 
     try {
       const data = new URLSearchParams();
@@ -30,13 +69,11 @@ export default function Contact() {
         mode: 'no-cors'
       });
 
+      setLastSender(nameSaved);
       setIsSent(true);
-      setStatusMessage('Thanks! Your message has been sent.');
       setFormData({ name: '', email: '', message: '' });
+      triggerCelebration();
 
-      setTimeout(() => {
-        setIsSent(false);
-      }, 4000);
     } catch (error) {
       console.error('Submission error:', error);
       setStatusMessage('Failed to send message. Please try again or reach out on LinkedIn.');
@@ -130,55 +167,83 @@ export default function Contact() {
                 <span className="contact-form-tag">Quick message</span>
                 <h3 className="contact-form-title">Send a note</h3>
 
-                <form className="contact-form" onSubmit={handleSubmit}>
-                  <label className="field">
-                    <span>Name</span>
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="Your name"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                    />
-                  </label>
+                {isSent ? (
+                  <div className="contact-success-box" role="alert">
+                    <div className="contact-stamp">DELIVERED ✓</div>
+                    <div className="contact-success-icon">💌</div>
+                    <h4 className="contact-success-title">Letter Dispatched!</h4>
+                    <p className="contact-success-desc">
+                      Thanks for reaching out{lastSender ? `, ${lastSender}` : ''}! Your message has landed safely in my inbox. I'll get back to you soon. ☕
+                    </p>
+                    <button
+                      type="button"
+                      className="contact-send-another"
+                      onClick={() => setIsSent(false)}
+                    >
+                      ✍️ Send another note
+                    </button>
+                  </div>
+                ) : (
+                  <form className="contact-form" onSubmit={handleSubmit}>
+                    <label className="field">
+                      <span>Name</span>
+                      <input
+                        type="text"
+                        name="name"
+                        placeholder="Your name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        required
+                      />
+                    </label>
 
-                  <label className="field">
-                    <span>Email</span>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="you@example.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      required
-                    />
-                  </label>
+                    <label className="field">
+                      <span>Email</span>
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        required
+                      />
+                    </label>
 
-                  <label className="field field--textarea">
-                    <span>Your Message</span>
-                    <textarea
-                      name="message"
-                      rows="5"
-                      placeholder="Tell me about your idea, project, or opportunity..."
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      required
-                    ></textarea>
-                  </label>
+                    <label className="field field--textarea">
+                      <span>Your Message</span>
+                      <textarea
+                        name="message"
+                        rows="5"
+                        placeholder="Tell me about your idea, project, or opportunity..."
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        required
+                      ></textarea>
+                    </label>
 
-                  <button
-                    type="submit"
-                    className={`contact-submit ${isSent ? 'is-sent' : ''}`}
-                    disabled={isSent || isSubmitting}
-                  >
-                    {isSubmitting ? 'Sending...' : isSent ? 'Message sent ✓' : 'Send message'}
-                  </button>
+                    <button
+                      type="submit"
+                      className={`contact-submit ${isSubmitting ? 'is-submitting' : ''}`}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <span className="plane-takeoff">✈️</span>
+                          <span>Sending your note...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Send message</span>
+                          <span className="submit-arrow">✉️</span>
+                        </>
+                      )}
+                    </button>
 
-                  {statusMessage && (
-                    <p className="contact-form-status">{statusMessage}</p>
-                  )}
-                </form>
+                    {statusMessage && (
+                      <p className="contact-form-status">{statusMessage}</p>
+                    )}
+                  </form>
+                )}
               </div>
             </div>
           </div>
