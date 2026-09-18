@@ -16,14 +16,17 @@ export default function Contact() {
     setStatusMessage(null);
 
     try {
-      const data = new FormData();
+      const data = new URLSearchParams();
       data.append('name', formData.name);
       data.append('email', formData.email);
       data.append('message', formData.message);
 
       await fetch(googleScriptUrl, {
         method: 'POST',
-        body: data,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: data.toString(),
         mode: 'no-cors'
       });
 
