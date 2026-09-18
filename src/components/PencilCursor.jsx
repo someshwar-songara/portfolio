@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 
 export default function PencilCursor() {
   const penRef = useRef(null);
-  const badgeTextRef = useRef(null);
   const dotsRef = useRef([]);
   const canvasRef = useRef(null);
   const isDrawingRef = useRef(false);
@@ -21,7 +20,7 @@ export default function PencilCursor() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Setup canvas size with DPI scaling
+  // Canvas size and DPR scaling
   useEffect(() => {
     if (!enabled) return;
     const canvas = canvasRef.current;
@@ -44,7 +43,7 @@ export default function PencilCursor() {
     return () => window.removeEventListener('resize', resizeCanvas);
   }, [enabled]);
 
-  // Main Cursor and Drawing Logic
+  // Main Cursor and Left-click Drawing
   useEffect(() => {
     if (!enabled) return;
 
@@ -68,12 +67,6 @@ export default function PencilCursor() {
       const tag = target.tagName;
       if (tag === 'A' || tag === 'BUTTON' || tag === 'INPUT' || tag === 'TEXTAREA') return true;
       return Boolean(target.closest && target.closest(interactive));
-    }
-
-    function setWritingText(text) {
-      if (badgeTextRef.current && badgeTextRef.current.textContent !== text) {
-        badgeTextRef.current.textContent = text;
-      }
     }
 
     function render() {
@@ -128,8 +121,8 @@ export default function PencilCursor() {
 
       startAnimation();
 
-      // Right-click Drawing execution
-      if (isDrawingRef.current && (e.buttons & 2)) {
+      // Left-click Drawing on canvas
+      if (isDrawingRef.current && (e.buttons & 1)) {
         const canvas = canvasRef.current;
         if (canvas) {
           const ctx = canvas.getContext('2d');
@@ -150,14 +143,13 @@ export default function PencilCursor() {
             lastDrawPos.current = { x: e.clientX, y: e.clientY };
           }
         }
-      } else if (isDrawingRef.current && !(e.buttons & 2)) {
-        // Released without pointerup
+      } else if (isDrawingRef.current && !(e.buttons & 1)) {
         isDrawingRef.current = false;
         document.body.classList.remove('is-pencil-drawing');
         penCursor.classList.remove('is-drawing');
       }
 
-      // Trigger writing animation wiggle
+      // Natural pencil wiggle while moving
       if (!isDrawingRef.current) {
         penCursor.classList.add('is-writing');
         clearTimeout(writingTimer);
@@ -190,19 +182,20 @@ export default function PencilCursor() {
     function onPointerDown(e) {
       if (!isVisible) return;
 
-      // Right click: Start Drawing on screen!
-      if (e.button === 2) {
-        e.preventDefault();
+      // Left click (button 0): Start pencil writing on screen
+      if (e.button === 0) {
+        const tag = e.target ? e.target.tagName : '';
+        // If clicking directly in text input or textarea, let user type normally
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
         isDrawingRef.current = true;
         lastDrawPos.current = { x: e.clientX, y: e.clientY };
         document.body.classList.add('is-pencil-drawing');
         penCursor.classList.add('is-drawing');
-        setWritingText('✏️ sketching...');
         setHasDrawings(true);
-        return;
       }
 
-      // Left click: normal ripple & click bounce
+      // Normal click ripple
       const ripple = document.createElement('div');
       ripple.className = 'cursor-ripple';
       ripple.style.left = `${e.clientX}px`;
@@ -217,22 +210,16 @@ export default function PencilCursor() {
     }
 
     function onPointerUp(e) {
-      if (e.button === 2 || isDrawingRef.current) {
+      if (e.button === 0 || isDrawingRef.current) {
         isDrawingRef.current = false;
         document.body.classList.remove('is-pencil-drawing');
         penCursor.classList.remove('is-drawing');
-        setWritingText('drafting... ✍️');
       }
       penCursor.classList.remove('is-clicking');
     }
 
-    function onContextMenu(e) {
-      // Disable default browser context menu
-      e.preventDefault();
-    }
-
+    // Disable text selection while drawing so text does not turn blue
     function onSelectStart(e) {
-      // Disable text selection highlighting while drawing
       if (isDrawingRef.current) {
         e.preventDefault();
       }
@@ -240,27 +227,9 @@ export default function PencilCursor() {
 
     function onElementEnter(e) {
       if (isDrawingRef.current) return;
-      const target = e.target;
-      if (isInteractiveTarget(target)) {
+      if (isInteractiveTarget(e.target)) {
         penCursor.classList.add('is-hovering');
         dotsRef.current.forEach((d) => d && d.classList.add('is-hovering'));
-
-        // Dynamic contextual writing text
-        if (target.closest('#projects')) {
-          setWritingText('sketching project 📐');
-        } else if (target.closest('#skills')) {
-          setWritingText('sharpening skills ⚡');
-        } else if (target.closest('#contact')) {
-          setWritingText('writing a note 💌');
-        } else if (target.closest('.theme-toggle')) {
-          setWritingText('flipping page 🌓');
-        } else if (target.closest('input, textarea')) {
-          setWritingText('typing thoughts ✍️');
-        } else if (target.closest('a, button')) {
-          setWritingText('click! ✦');
-        } else {
-          setWritingText('writing... ✍️');
-        }
       }
     }
 
@@ -269,7 +238,6 @@ export default function PencilCursor() {
       if (isInteractiveTarget(e.target)) {
         penCursor.classList.remove('is-hovering');
         dotsRef.current.forEach((d) => d && d.classList.remove('is-hovering'));
-        setWritingText('drafting... ✍️');
       }
     }
 
@@ -279,7 +247,6 @@ export default function PencilCursor() {
       document.addEventListener('mouseleave', onMouseLeave);
       document.addEventListener('pointerdown', onPointerDown);
       document.addEventListener('pointerup', onPointerUp);
-      document.addEventListener('contextmenu', onContextMenu);
       document.addEventListener('selectstart', onSelectStart);
       document.addEventListener('mouseover', onElementEnter, { passive: true });
       document.addEventListener('mouseout', onElementLeave, { passive: true });
@@ -291,7 +258,6 @@ export default function PencilCursor() {
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('pointerdown', onPointerDown);
       document.removeEventListener('pointerup', onPointerUp);
-      document.removeEventListener('contextmenu', onContextMenu);
       document.removeEventListener('selectstart', onSelectStart);
       document.removeEventListener('mouseover', onElementEnter);
       document.removeEventListener('mouseout', onElementLeave);
@@ -337,7 +303,7 @@ export default function PencilCursor() {
         </button>
       )}
 
-      {/* Pencil Cursor */}
+      {/* Clean Pencil Cursor without floating tags */}
       <div ref={penRef} className="pencil-cursor">
         <svg className="pencil-nib-svg" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
           {/* Sharp graphite tip pointing precisely at (1.5, 1.5) */}
@@ -353,11 +319,6 @@ export default function PencilCursor() {
           {/* Coral pink eraser */}
           <polygon points="18.5,22.5 22.5,18.5 25.5,21.5 21.5,25.5" fill="#fb7185" stroke="#e11d48" strokeWidth="0.6" strokeLinejoin="round" />
         </svg>
-
-        {/* Floating handwritten tag attached to the pencil */}
-        <div className="pencil-writing-badge" aria-hidden="true">
-          <span ref={badgeTextRef}>drafting... ✍️</span>
-        </div>
       </div>
 
       {/* 6-dot Ink Trail */}

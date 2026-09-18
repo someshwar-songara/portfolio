@@ -546,43 +546,6 @@ body {
   animation: none;
 }
 
-/* Floating Handwritten Badge beside Pencil */
-.pencil-writing-badge {
-  position: absolute;
-  top: 14px;
-  left: 20px;
-  pointer-events: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  background: rgba(254, 240, 138, 0.96);
-  border: 1px dashed rgba(28, 25, 23, 0.32);
-  box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.12);
-  border-radius: 6px;
-  padding: 0.1rem 0.48rem;
-  white-space: nowrap;
-  font-family: var(--font-hand);
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: #1c1917;
-  transform-origin: top left;
-  transform: rotate(-3deg);
-  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  opacity: 1;
-}
-
-.pencil-cursor.is-idle .pencil-writing-badge {
-  opacity: 0;
-  transform: scale(0.85) rotate(-3deg);
-}
-
-body[data-theme="dark"] .pencil-writing-badge {
-  background: rgba(30, 41, 59, 0.95);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #f8fafc;
-  box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.4);
-}
-
 /* 6-dot Ink Trail */
 .cursor-trail-dot {
   position: fixed;
