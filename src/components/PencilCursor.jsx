@@ -1,3 +1,4 @@
+// Version 2.1.0 - Clean custom pencil cursor (drawing removed)
 import { useState, useEffect, useRef } from 'react';
 
 export default function PencilCursor() {
