@@ -2,21 +2,44 @@ import { useState } from 'react';
 
 export default function Contact() {
   const [isSent, setIsSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
   const contactGithub = 'https://github.com/someshwar-songara';
   const contactLinkedin = 'https://www.linkedin.com/in/someshwar-songara/';
+  const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbyWm9_PaLQRyu8Aq6ETTKzrmD3Ut4D8i1BPupZaI6Lj-Bj0Uo-BloCv4qdoHgrrJw/exec';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSent(true);
-    setStatusMessage('Thanks! I’ll get back to you soon.');
-    setFormData({ name: '', email: '', message: '' });
+    setIsSubmitting(true);
+    setStatusMessage(null);
 
-    setTimeout(() => {
-      setIsSent(false);
-    }, 2200);
+    try {
+      const data = new FormData();
+      data.append('name', formData.name);
+      data.append('email', formData.email);
+      data.append('message', formData.message);
+
+      await fetch(googleScriptUrl, {
+        method: 'POST',
+        body: data,
+        mode: 'no-cors'
+      });
+
+      setIsSent(true);
+      setStatusMessage('Thanks! Your message has been sent.');
+      setFormData({ name: '', email: '', message: '' });
+
+      setTimeout(() => {
+        setIsSent(false);
+      }, 4000);
+    } catch (error) {
+      console.error('Submission error:', error);
+      setStatusMessage('Failed to send message. Please try again or reach out on LinkedIn.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -144,9 +167,9 @@ export default function Contact() {
                   <button
                     type="submit"
                     className={`contact-submit ${isSent ? 'is-sent' : ''}`}
-                    disabled={isSent}
+                    disabled={isSent || isSubmitting}
                   >
-                    {isSent ? 'Message sent' : 'Send message'}
+                    {isSubmitting ? 'Sending...' : isSent ? 'Message sent ✓' : 'Send message'}
                   </button>
 
                   {statusMessage && (
