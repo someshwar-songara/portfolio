@@ -513,23 +513,74 @@ body {
   filter: drop-shadow(1px 2px 4px rgba(0,0,0,.22));
 }
 
+@keyframes pencilWriting {
+  0% { transform: rotate(-6deg) translate(0, 0); }
+  25% { transform: rotate(-13deg) translate(1.5px, -1px); }
+  50% { transform: rotate(-5deg) translate(-1px, 1.2px); }
+  75% { transform: rotate(-15deg) translate(1.2px, 0); }
+  100% { transform: rotate(-6deg) translate(0, 0); }
+}
+
 .pencil-cursor .pencil-nib-svg {
   display: block;
   transform-origin: 1px 1px;
-  transition: transform .22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform .18s cubic-bezier(0.34, 1.56, 0.64, 1), filter .18s ease;
+}
+
+.pencil-cursor.is-writing .pencil-nib-svg {
+  animation: pencilWriting 0.22s infinite alternate ease-in-out;
 }
 
 .pencil-cursor.is-hovering .pencil-nib-svg {
-  transform: rotate(-14deg) scale(1.18);
-  filter: drop-shadow(0 0 6px rgba(251, 191, 36, .85));
+  animation: pencilWriting 0.16s infinite alternate ease-in-out;
+  filter: drop-shadow(0 0 7px rgba(251, 191, 36, 0.95));
 }
 
 .pencil-cursor.is-clicking .pencil-nib-svg {
-  transform: scale(0.88) translate(2px, 2px);
+  transform: scale(0.84) translate(2px, 2px) rotate(-18deg) !important;
+  animation: none !important;
 }
 
 .pencil-cursor.is-idle .pencil-nib-svg {
   opacity: 0.85;
+  animation: none;
+}
+
+/* Floating Handwritten Badge beside Pencil */
+.pencil-writing-badge {
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(254, 240, 138, 0.96);
+  border: 1px dashed rgba(28, 25, 23, 0.32);
+  box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  padding: 0.1rem 0.48rem;
+  white-space: nowrap;
+  font-family: var(--font-hand);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1c1917;
+  transform-origin: top left;
+  transform: rotate(-3deg);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  opacity: 1;
+}
+
+.pencil-cursor.is-idle .pencil-writing-badge {
+  opacity: 0;
+  transform: scale(0.85) rotate(-3deg);
+}
+
+body[data-theme="dark"] .pencil-writing-badge {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #f8fafc;
+  box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.4);
 }
 
 /* 6-dot Ink Trail */

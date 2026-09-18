@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 
 export default function PencilCursor() {
   const penRef = useRef(null);
+  const badgeTextRef = useRef(null);
   const dotsRef = useRef([]);
   const [enabled, setEnabled] = useState(false);
 
@@ -28,6 +29,7 @@ export default function PencilCursor() {
     let isVisible = false;
     let animId = null;
     let idleTimer = null;
+    let writingTimer = null;
 
     const interactive =
       'a, button, input, textarea, .nav-link, .nav-toggle, .theme-toggle, .project-card, .skill-chip, .info-card, .social-link, .btn-primary, .btn-outline, .contact-submit, .bring-card, .timeline-note, .hero-info-note, .tech-badge, .avatar-frame';
@@ -37,6 +39,12 @@ export default function PencilCursor() {
       const tag = target.tagName;
       if (tag === 'A' || tag === 'BUTTON' || tag === 'INPUT' || tag === 'TEXTAREA') return true;
       return Boolean(target.closest && target.closest(interactive));
+    }
+
+    function setWritingText(text) {
+      if (badgeTextRef.current && badgeTextRef.current.textContent !== text) {
+        badgeTextRef.current.textContent = text;
+      }
     }
 
     function render() {
@@ -91,11 +99,19 @@ export default function PencilCursor() {
 
       startAnimation();
 
+      // Trigger writing animation wiggle
+      penCursor.classList.add('is-writing');
+      clearTimeout(writingTimer);
+      writingTimer = setTimeout(() => {
+        penCursor.classList.remove('is-writing');
+      }, 160);
+
       clearTimeout(idleTimer);
       penCursor.classList.remove('is-idle');
       idleTimer = setTimeout(() => {
         penCursor.classList.add('is-idle');
-      }, 1600);
+        penCursor.classList.remove('is-writing');
+      }, 1400);
     }
 
     function onMouseLeave() {
@@ -126,9 +142,27 @@ export default function PencilCursor() {
     }
 
     function onElementEnter(e) {
-      if (isInteractiveTarget(e.target)) {
+      const target = e.target;
+      if (isInteractiveTarget(target)) {
         penCursor.classList.add('is-hovering');
         dotsRef.current.forEach((d) => d && d.classList.add('is-hovering'));
+
+        // Dynamic contextual writing text
+        if (target.closest('#projects')) {
+          setWritingText('sketching project 📐');
+        } else if (target.closest('#skills')) {
+          setWritingText('sharpening skills ⚡');
+        } else if (target.closest('#contact')) {
+          setWritingText('writing a note 💌');
+        } else if (target.closest('.theme-toggle')) {
+          setWritingText('flipping page 🌓');
+        } else if (target.closest('input, textarea')) {
+          setWritingText('typing thoughts ✍️');
+        } else if (target.closest('a, button')) {
+          setWritingText('click! ✦');
+        } else {
+          setWritingText('writing... ✍️');
+        }
       }
     }
 
@@ -136,6 +170,7 @@ export default function PencilCursor() {
       if (isInteractiveTarget(e.target)) {
         penCursor.classList.remove('is-hovering');
         dotsRef.current.forEach((d) => d && d.classList.remove('is-hovering'));
+        setWritingText('drafting... ✍️');
       }
     }
 
@@ -159,6 +194,7 @@ export default function PencilCursor() {
       document.removeEventListener('mouseout', onElementLeave);
       if (animId) cancelAnimationFrame(animId);
       clearTimeout(idleTimer);
+      clearTimeout(writingTimer);
     };
   }, [enabled]);
 
@@ -167,25 +203,27 @@ export default function PencilCursor() {
   return (
     <>
       <div ref={penRef} className="pencil-cursor">
-        <svg className="pencil-nib-svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M1 1L6.5 2.8L18.5 14.8L14.8 18.5L2.8 6.5L1 1Z"
-            fill="url(#pencilTipGrad)"
-            stroke="#1c1917"
-            strokeWidth="1.2"
-            strokeLinejoin="round"
-          />
-          <path d="M14 10.5L10.5 14" stroke="#1c1917" strokeWidth="1.2" />
-          <circle cx="1.8" cy="1.8" r="1.2" fill="#dc2626" />
-          <defs>
-            <linearGradient id="pencilTipGrad" x1="1" y1="1" x2="18" y2="18" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#fef08a" />
-              <stop offset="0.5" stopColor="#fbbf24" />
-              <stop offset="1" stopColor="#d97706" />
-            </linearGradient>
-          </defs>
+        <svg className="pencil-nib-svg" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          {/* Sharp graphite tip pointing precisely at (1.5, 1.5) */}
+          <polygon points="1.5,1.5 6.5,2.5 2.5,6.5" fill="#1c1917" />
+          {/* Sharpened wooden cone */}
+          <polygon points="2.5,6.5 6.5,2.5 12,8 8,12" fill="#fed7aa" stroke="#d97706" strokeWidth="0.6" strokeLinejoin="round" />
+          {/* Classic yellow hexagonal pencil body */}
+          <polygon points="8,12 12,8 20,16 16,20" fill="#facc15" stroke="#ca8a04" strokeWidth="0.6" strokeLinejoin="round" />
+          {/* Pencil core highlight line */}
+          <line x1="10" y1="10" x2="18" y2="18" stroke="#fef08a" strokeWidth="0.8" opacity="0.8" />
+          {/* Silver ferrule metal band */}
+          <polygon points="16,20 20,16 22.5,18.5 18.5,22.5" fill="#cbd5e1" stroke="#64748b" strokeWidth="0.6" strokeLinejoin="round" />
+          {/* Coral pink eraser */}
+          <polygon points="18.5,22.5 22.5,18.5 25.5,21.5 21.5,25.5" fill="#fb7185" stroke="#e11d48" strokeWidth="0.6" strokeLinejoin="round" />
         </svg>
+
+        {/* Floating handwritten tag attached to the pencil */}
+        <div className="pencil-writing-badge" aria-hidden="true">
+          <span ref={badgeTextRef}>drafting... ✍️</span>
+        </div>
       </div>
+
       {[1, 2, 3, 4, 5, 6].map((num, i) => (
         <div
           key={num}
