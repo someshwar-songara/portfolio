@@ -3152,3 +3152,68 @@ body[data-theme="dark"] .contact-send-another {
 body[data-theme="dark"] .contact-send-another:hover {
   background: #e2e8f0;
 }
+
+/* ── Interactive Pencil Drawing Canvas & Controls ────────── */
+.pencil-drawing-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 99990;
+}
+
+/* Disable blue text selection while drawing */
+body.is-pencil-drawing,
+body.is-pencil-drawing * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  cursor: none !important;
+}
+
+.pencil-cursor.is-drawing .pencil-nib-svg {
+  transform: rotate(-22deg) scale(1.12) translate(1px, -1px);
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.9));
+  animation: pencilWriting 0.14s infinite alternate ease-in-out !important;
+}
+
+/* Floating Clear Sketch Button */
+.pencil-clear-btn {
+  position: fixed;
+  bottom: 1.6rem;
+  right: 1.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--sticky-yellow);
+  color: #1c1917;
+  border: 1.5px dashed rgba(28, 25, 23, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
+  font-family: var(--font-hand);
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  z-index: 99995;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, box-shadow 0.2s ease;
+  animation: popCardIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.pencil-clear-btn:hover {
+  transform: translateY(-2.5px) scale(1.05);
+  background: #fde047;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+}
+
+body[data-theme="dark"] .pencil-clear-btn {
+  background: #334155;
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #f8fafc;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+}
+
+body[data-theme="dark"] .pencil-clear-btn:hover {
+  background: #475569;
+}

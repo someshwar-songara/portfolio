@@ -4,7 +4,12 @@ export default function PencilCursor() {
   const penRef = useRef(null);
   const badgeTextRef = useRef(null);
   const dotsRef = useRef([]);
+  const canvasRef = useRef(null);
+  const isDrawingRef = useRef(false);
+  const lastDrawPos = useRef({ x: 0, y: 0 });
+
   const [enabled, setEnabled] = useState(false);
+  const [hasDrawings, setHasDrawings] = useState(false);
 
   useEffect(() => {
     if (!window.matchMedia || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
@@ -16,6 +21,30 @@ export default function PencilCursor() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Setup canvas size with DPI scaling
+  useEffect(() => {
+    if (!enabled) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.scale(dpr, dpr);
+      }
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    return () => window.removeEventListener('resize', resizeCanvas);
+  }, [enabled]);
+
+  // Main Cursor and Drawing Logic
   useEffect(() => {
     if (!enabled) return;
 
@@ -32,7 +61,7 @@ export default function PencilCursor() {
     let writingTimer = null;
 
     const interactive =
-      'a, button, input, textarea, .nav-link, .nav-toggle, .theme-toggle, .project-card, .skill-chip, .info-card, .social-link, .btn-primary, .btn-outline, .contact-submit, .bring-card, .timeline-note, .hero-info-note, .tech-badge, .avatar-frame';
+      'a, button, input, textarea, .nav-link, .nav-toggle, .theme-toggle, .project-card, .skill-chip, .info-card, .social-link, .btn-primary, .btn-outline, .contact-submit, .bring-card, .timeline-note, .hero-info-note, .tech-badge, .avatar-frame, .pencil-clear-btn';
 
     function isInteractiveTarget(target) {
       if (!target || target === document.body || target === document.documentElement) return false;
@@ -99,12 +128,43 @@ export default function PencilCursor() {
 
       startAnimation();
 
+      // Right-click Drawing execution
+      if (isDrawingRef.current && (e.buttons & 2)) {
+        const canvas = canvasRef.current;
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            const isDarkTheme = document.body.getAttribute('data-theme') === 'dark';
+            ctx.strokeStyle = isDarkTheme ? '#fef08a' : '#292524';
+            ctx.lineWidth = 2.4;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.shadowColor = isDarkTheme ? 'rgba(254, 240, 138, 0.4)' : 'rgba(41, 37, 36, 0.25)';
+            ctx.shadowBlur = 1.5;
+
+            ctx.beginPath();
+            ctx.moveTo(lastDrawPos.current.x, lastDrawPos.current.y);
+            ctx.lineTo(e.clientX, e.clientY);
+            ctx.stroke();
+
+            lastDrawPos.current = { x: e.clientX, y: e.clientY };
+          }
+        }
+      } else if (isDrawingRef.current && !(e.buttons & 2)) {
+        // Released without pointerup
+        isDrawingRef.current = false;
+        document.body.classList.remove('is-pencil-drawing');
+        penCursor.classList.remove('is-drawing');
+      }
+
       // Trigger writing animation wiggle
-      penCursor.classList.add('is-writing');
-      clearTimeout(writingTimer);
-      writingTimer = setTimeout(() => {
-        penCursor.classList.remove('is-writing');
-      }, 160);
+      if (!isDrawingRef.current) {
+        penCursor.classList.add('is-writing');
+        clearTimeout(writingTimer);
+        writingTimer = setTimeout(() => {
+          penCursor.classList.remove('is-writing');
+        }, 160);
+      }
 
       clearTimeout(idleTimer);
       penCursor.classList.remove('is-idle');
@@ -120,10 +180,29 @@ export default function PencilCursor() {
         if (d) d.style.opacity = '0';
       });
       isVisible = false;
+      if (isDrawingRef.current) {
+        isDrawingRef.current = false;
+        document.body.classList.remove('is-pencil-drawing');
+        penCursor.classList.remove('is-drawing');
+      }
     }
 
     function onPointerDown(e) {
       if (!isVisible) return;
+
+      // Right click: Start Drawing on screen!
+      if (e.button === 2) {
+        e.preventDefault();
+        isDrawingRef.current = true;
+        lastDrawPos.current = { x: e.clientX, y: e.clientY };
+        document.body.classList.add('is-pencil-drawing');
+        penCursor.classList.add('is-drawing');
+        setWritingText('✏️ sketching...');
+        setHasDrawings(true);
+        return;
+      }
+
+      // Left click: normal ripple & click bounce
       const ripple = document.createElement('div');
       ripple.className = 'cursor-ripple';
       ripple.style.left = `${e.clientX}px`;
@@ -137,11 +216,30 @@ export default function PencilCursor() {
       }, 550);
     }
 
-    function onPointerUp() {
+    function onPointerUp(e) {
+      if (e.button === 2 || isDrawingRef.current) {
+        isDrawingRef.current = false;
+        document.body.classList.remove('is-pencil-drawing');
+        penCursor.classList.remove('is-drawing');
+        setWritingText('drafting... ✍️');
+      }
       penCursor.classList.remove('is-clicking');
     }
 
+    function onContextMenu(e) {
+      // Disable default browser context menu
+      e.preventDefault();
+    }
+
+    function onSelectStart(e) {
+      // Disable text selection highlighting while drawing
+      if (isDrawingRef.current) {
+        e.preventDefault();
+      }
+    }
+
     function onElementEnter(e) {
+      if (isDrawingRef.current) return;
       const target = e.target;
       if (isInteractiveTarget(target)) {
         penCursor.classList.add('is-hovering');
@@ -167,6 +265,7 @@ export default function PencilCursor() {
     }
 
     function onElementLeave(e) {
+      if (isDrawingRef.current) return;
       if (isInteractiveTarget(e.target)) {
         penCursor.classList.remove('is-hovering');
         dotsRef.current.forEach((d) => d && d.classList.remove('is-hovering'));
@@ -174,12 +273,14 @@ export default function PencilCursor() {
       }
     }
 
-    // Attach listeners after micro-delay to not block hydration/initial paint
+    // Attach listeners
     const initTimer = setTimeout(() => {
-      document.addEventListener('mousemove', onMouseMove, { passive: true });
+      document.addEventListener('mousemove', onMouseMove, { passive: false });
       document.addEventListener('mouseleave', onMouseLeave);
       document.addEventListener('pointerdown', onPointerDown);
       document.addEventListener('pointerup', onPointerUp);
+      document.addEventListener('contextmenu', onContextMenu);
+      document.addEventListener('selectstart', onSelectStart);
       document.addEventListener('mouseover', onElementEnter, { passive: true });
       document.addEventListener('mouseout', onElementLeave, { passive: true });
     }, 300);
@@ -190,18 +291,53 @@ export default function PencilCursor() {
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('pointerdown', onPointerDown);
       document.removeEventListener('pointerup', onPointerUp);
+      document.removeEventListener('contextmenu', onContextMenu);
+      document.removeEventListener('selectstart', onSelectStart);
       document.removeEventListener('mouseover', onElementEnter);
       document.removeEventListener('mouseout', onElementLeave);
       if (animId) cancelAnimationFrame(animId);
       clearTimeout(idleTimer);
       clearTimeout(writingTimer);
+      document.body.classList.remove('is-pencil-drawing');
     };
   }, [enabled]);
+
+  const handleClearCanvas = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+    setHasDrawings(false);
+  };
 
   if (!enabled) return null;
 
   return (
     <>
+      {/* Real Full-Screen Pencil Sketch Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="pencil-drawing-canvas"
+        aria-hidden="true"
+      />
+
+      {/* Floating Clear Sketch Button */}
+      {hasDrawings && (
+        <button
+          type="button"
+          className="pencil-clear-btn"
+          onClick={handleClearCanvas}
+          title="Clear screen drawings"
+          aria-label="Clear screen drawings"
+        >
+          🧹 Clear sketch
+        </button>
+      )}
+
+      {/* Pencil Cursor */}
       <div ref={penRef} className="pencil-cursor">
         <svg className="pencil-nib-svg" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
           {/* Sharp graphite tip pointing precisely at (1.5, 1.5) */}
@@ -224,6 +360,7 @@ export default function PencilCursor() {
         </div>
       </div>
 
+      {/* 6-dot Ink Trail */}
       {[1, 2, 3, 4, 5, 6].map((num, i) => (
         <div
           key={num}
