@@ -9,7 +9,15 @@
 
 🌐 **Live Demo:** [portfolio-chi-eight-36.vercel.app](https://portfolio-chi-eight-36.vercel.app/)
 ---
-<img width="1912" height="908" alt="image" src="https://github.com/user-attachments/assets/4b0a7356-65fe-437c-b4a4-ac40800c85d7" />
+<a href="https://portfolio-chi-eight-36.vercel.app" target="_blank" rel="noopener noreferrer">
+  <img
+    width="1912"
+    height="908"
+    alt="image"
+    src="https://github.com/user-attachments/assets/4b0a7356-65fe-437c-b4a4-ac40800c85d7"
+  />
+</a>
+
 ---
 
 ## ✨ Features
