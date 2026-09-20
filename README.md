@@ -8,7 +8,8 @@
 > A handcrafted, dev-journal inspired personal portfolio website with sticky notes, corkboard pinboard physics, live GitHub synchronization, and dark mode. Built with **React 18** and **Vite**, engineered for high performance and optimal Core Web Vitals.
 
 🌐 **Live Demo:** [portfolio-chi-eight-36.vercel.app](https://portfolio-chi-eight-36.vercel.app/)
-
+---
+<img width="1912" height="908" alt="image" src="https://github.com/user-attachments/assets/4b0a7356-65fe-437c-b4a4-ac40800c85d7" />
 ---
 
 ## ✨ Features
