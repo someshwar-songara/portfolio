@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react';
 import initialRepos from '../data/githubCache.json';
 import initialProfile from '../data/githubProfileCache.json';
-import { curatedMap, customProjects, paletteCycle, defaultProjects } from '../data/projects';
+import {
+  curatedMap,
+  customProjects,
+  paletteCycle,
+  defaultProjects,
+  findCuratedProject,
+  getProjectEmoji,
+  normalizeProjectKey,
+} from '../data/projects';
 
 const GITHUB_USERNAME = 'someshwar-songara';
 
@@ -22,17 +30,20 @@ function processRepos(githubRepos) {
     const palette = paletteCycle[index % paletteCycle.length];
     index++;
 
-    const curated = curatedMap[repoName] || null;
+    const curated = findCuratedProject(repoName);
     const primaryLang = repo.language || '';
     const techStack = curated?.tech || (primaryLang ? [primaryLang] : ['Code']);
     const demo = repo.homepage || curated?.demo_url || null;
+    const projectName = curated?.name || repoName.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    const projectDescription = curated?.description || repo.description || 'Open-source project built and maintained on GitHub.';
+    const emoji = curated?.emoji || getProjectEmoji(projectName, projectDescription, techStack);
 
     projects.push({
-      name: curated?.name || repoName.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-      description: curated?.description || repo.description || 'Open-source project built and maintained on GitHub.',
+      name: projectName,
+      description: projectDescription,
       tech: techStack,
       tag: curated?.tag || (primaryLang ? `${primaryLang} Repo` : 'GitHub Repo'),
-      emoji: curated?.emoji || '⚡',
+      emoji: emoji,
       color: curated?.color || palette.color,
       pin_color: curated?.pin_color || palette.pin_color,
       rotate: curated?.rotate || palette.rotate,
@@ -45,9 +56,18 @@ function processRepos(githubRepos) {
     });
   }
 
-  // Append curated projects that are not yet repositories on GitHub
+  // Append curated projects that are not yet repositories on GitHub without duplicating
+  const existingKeys = new Set(projects.map((p) => normalizeProjectKey(p.name)));
+
   for (const custom of customProjects) {
-    projects.push(custom);
+    const customKey = normalizeProjectKey(custom.name);
+    if (!existingKeys.has(customKey)) {
+      projects.push({
+        ...custom,
+        emoji: custom.emoji || getProjectEmoji(custom.name, custom.description, custom.tech),
+      });
+      existingKeys.add(customKey);
+    }
   }
 
   return projects;

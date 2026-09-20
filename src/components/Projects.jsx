@@ -1,3 +1,5 @@
+import { getProjectEmoji } from '../data/projects';
+
 export default function Projects({ projects }) {
   return (
     <section id="projects" className="section section--cork" aria-label="Projects">
@@ -36,8 +38,8 @@ export default function Projects({ projects }) {
 
               {/* Card header */}
               <div className="project-header">
-                <span className="project-emoji" aria-hidden="true">
-                  {project.emoji || '⚡'}
+                <span className="project-emoji" aria-hidden="true" title={project.name}>
+                  {project.emoji || getProjectEmoji(project.name, project.description, project.tech)}
                 </span>
                 <div className="project-meta-tags">
                   {Boolean(project.stars) && (
