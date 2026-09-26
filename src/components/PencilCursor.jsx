@@ -12,7 +12,7 @@ export default function PencilCursor() {
     }
     const timer = setTimeout(() => {
       setEnabled(true);
-    }, 600);
+    }, 1200);
     return () => clearTimeout(timer);
   }, []);
 

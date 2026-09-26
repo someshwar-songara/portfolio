@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react';
 
 export function useTheme() {
   const [theme, setTheme] = useState(() => {
+    if (typeof document !== 'undefined') {
+      const current = document.documentElement.getAttribute('data-theme');
+      if (current === 'light' || current === 'dark') {
+        return current;
+      }
+    }
     try {
       const savedTheme = localStorage.getItem('portfolio-theme');
       if (savedTheme === 'light' || savedTheme === 'dark') {
@@ -17,6 +23,7 @@ export function useTheme() {
   });
 
   useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
     document.body.setAttribute('data-theme', theme);
     document.documentElement.style.colorScheme = theme;
     try {

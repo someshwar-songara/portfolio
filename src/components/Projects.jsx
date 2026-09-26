@@ -1,6 +1,26 @@
 import { getProjectEmoji } from '../data/projects';
 
-export default function Projects({ projects }) {
+// Helper to provide tech icons for visual distinction
+function getTechIcon(name = '') {
+  const n = name.toLowerCase();
+  if (n.includes('react')) return '⚛️';
+  if (n.includes('javascript') || n === 'js') return '⚡';
+  if (n.includes('php')) return '🐘';
+  if (n.includes('mysql') || n.includes('sql')) return '🗄️';
+  if (n.includes('node')) return '🟢';
+  if (n.includes('socket')) return '💬';
+  if (n.includes('android')) return '📱';
+  if (n.includes('java')) return '☕';
+  if (n.includes('firebase')) return '🔥';
+  if (n.includes('python')) return '🐍';
+  if (n.includes('weather api')) return '🌦️';
+  if (n.includes('css') || n.includes('html')) return '🎨';
+  if (n.includes('speech')) return '🎙️';
+  if (n.includes('llm') || n.includes('ai')) return '🤖';
+  return '⚙️';
+}
+
+export default function Projects({ projects = [] }) {
   return (
     <section id="projects" className="section section--cork" aria-label="Projects">
       <div className="container">
@@ -13,7 +33,7 @@ export default function Projects({ projects }) {
           </div>
           <h2 className="section-title section-title--light">Things I've Built</h2>
           <p className="section-note section-note--light">
-            Real code. Real problems. Auto-synced with GitHub repositories.
+            Real code. Real problems. Practical engineering projects from full-stack web to mobile &amp; edge AI.
           </p>
         </header>
 
@@ -27,14 +47,24 @@ export default function Projects({ projects }) {
               style={{ '--card-rotate': project.rotate || '0deg' }}
               aria-label={`Project: ${project.name}`}
             >
-              {/* Pin */}
+              {/* Pushpin with realistic 3D shadow */}
               <div className={`project-pin ${project.pin_color || 'pin-red'}`} aria-hidden="true"></div>
 
               {project.wip && (
                 <div className="wip-ribbon" aria-label="Under construction">
-                  🚧 Under Construction
+                  🚧 Active Build
                 </div>
               )}
+
+              {/* Card top mini window bar */}
+              <div className="project-top-bar" aria-hidden="true">
+                <div className="window-dots">
+                  <span className="window-dot dot--red"></span>
+                  <span className="window-dot dot--yellow"></span>
+                  <span className="window-dot dot--green"></span>
+                </div>
+                <span className="project-branch-tag">git:main</span>
+              </div>
 
               {/* Card header */}
               <div className="project-header">
@@ -54,11 +84,12 @@ export default function Projects({ projects }) {
               <h3 className="project-name">{project.name}</h3>
               <p className="project-desc">{project.description}</p>
 
-              {/* Tech badges */}
+              {/* Tech badges with icons */}
               <div className="tech-badges" aria-label="Technologies used">
                 {project.tech?.map((tech) => (
                   <span key={tech} className="tech-badge">
-                    {tech}
+                    <span className="tech-badge-icon" aria-hidden="true">{getTechIcon(tech)}</span>
+                    <span className="tech-badge-text">{tech}</span>
                   </span>
                 ))}
               </div>
@@ -76,14 +107,14 @@ export default function Projects({ projects }) {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
                     </svg>
-                    GitHub
+                    Source Code
                   </a>
                 ) : (
                   <span className="project-btn project-btn--disabled" aria-label="GitHub link coming soon">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
                     </svg>
-                    GitHub
+                    Code Soon
                   </span>
                 )}
 

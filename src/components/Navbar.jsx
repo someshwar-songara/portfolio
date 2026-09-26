@@ -58,7 +58,6 @@ export default function Navbar({ isDark, toggleTheme }) {
     <nav
       className={`main-nav ${isScrolled ? 'scrolled' : ''}`}
       id="main-nav"
-      role="navigation"
       aria-label="Main navigation"
     >
       <div className="nav-inner">
@@ -90,7 +89,7 @@ export default function Navbar({ isDark, toggleTheme }) {
         </button>
 
         {/* Links */}
-        <ul className={`nav-links ${isOpen ? 'open' : ''}`} id="nav-links" role="list">
+        <ul className={`nav-links ${isOpen ? 'open' : ''}`} id="nav-links">
           {[
             { id: 'hero', label: 'Home' },
             { id: 'about', label: 'About' },
@@ -131,6 +130,7 @@ export default function Navbar({ isDark, toggleTheme }) {
               className="nav-resume nav-resume--disabled"
               title="Resume coming soon"
               aria-label="Resume coming soon"
+              aria-disabled="true"
             >
               <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 16V4m0 12-4-4m4 4 4-4M4 20h16" />
@@ -138,6 +138,20 @@ export default function Navbar({ isDark, toggleTheme }) {
               Resume
             </span>
           )}
+
+          <button
+            type="button"
+            className="nav-ai-btn"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent('open-chatbot'));
+              document.getElementById('chatbot-trigger')?.click();
+            }}
+            title="Chat with Somesh AI Assistant"
+            aria-label="Chat with Somesh AI Assistant"
+          >
+            <span aria-hidden="true">🤖</span>
+            <span className="nav-ai-text">Ask AI</span>
+          </button>
 
           <button
             className="theme-toggle"
