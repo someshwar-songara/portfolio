@@ -11,35 +11,15 @@ export const curatedMap = {
     rotate: '-1.5deg',
     demo_url: 'https://ip-chat-rho.vercel.app',
   },
-  'Hospital-2.0': {
-    name: 'Hospital Management 2.0',
-    description: 'Comprehensive hospital management system designed to streamline patient records, appointments, and staff workflows.',
-    tech: ['PHP', 'MySQL', 'JavaScript', 'HTML/CSS'],
-    tag: 'Web App',
-    emoji: '🏥',
-    color: 'sticky-green',
-    pin_color: 'pin-green',
-    rotate: '1.2deg',
-  },
-  'academic-diary': {
-    name: 'Academic Diary',
-    description: 'Academic management web app to track assignments, deadlines, and notes — built to solve real student productivity problems.',
-    tech: ['PHP', 'MySQL', 'JavaScript', 'HTML/CSS'],
-    tag: 'Web App',
-    emoji: '📓',
-    color: 'sticky-yellow',
-    pin_color: 'pin-red',
-    rotate: '-2deg',
-  },
   'portfolio': {
     name: 'Personal Portfolio',
     description: 'This dev journal portfolio — handcrafted with sticky-note physics, dynamic GitHub sync, and dark theme polish.',
-    tech: ['React', 'CSS', 'JavaScript', 'PHP'],
+    tech: ['React', 'CSS', 'JavaScript'],
     tag: 'Personal',
     emoji: '🌐',
     color: 'sticky-purple',
     pin_color: 'pin-blue',
-    rotate: '-1deg',
+    rotate: '1.2deg',
     demo_url: 'https://portfolio-chi-eight-36.vercel.app',
   },
   'Weather-App': {
@@ -48,9 +28,9 @@ export const curatedMap = {
     tech: ['Java', 'Android Studio', 'Firebase', 'Weather API'],
     tag: 'Android App',
     emoji: '🌦️',
-    color: 'sticky-blue',
-    pin_color: 'pin-blue',
-    rotate: '1.5deg',
+    color: 'sticky-yellow',
+    pin_color: 'pin-red',
+    rotate: '-1.8deg',
     demo_url: null,
   },
   'weather-app': {
@@ -59,10 +39,30 @@ export const curatedMap = {
     tech: ['Java', 'Android Studio', 'Firebase', 'Weather API'],
     tag: 'Android App',
     emoji: '🌦️',
+    color: 'sticky-yellow',
+    pin_color: 'pin-red',
+    rotate: '-1.8deg',
+    demo_url: null,
+  },
+  'Hospital-2.0': {
+    name: 'Hospital Management 2.0',
+    description: 'Comprehensive hospital management system designed to streamline patient records, appointments, and staff workflows.',
+    tech: ['PHP', 'MySQL', 'JavaScript', 'HTML/CSS'],
+    tag: 'Web App',
+    emoji: '🏥',
+    color: 'sticky-green',
+    pin_color: 'pin-green',
+    rotate: '1.4deg',
+  },
+  'academic-diary': {
+    name: 'Academic Diary',
+    description: 'Academic management web app to track assignments, deadlines, and notes — built to solve real student productivity problems.',
+    tech: ['PHP', 'MySQL', 'JavaScript', 'HTML/CSS'],
+    tag: 'Web App',
+    emoji: '📓',
     color: 'sticky-blue',
     pin_color: 'pin-blue',
-    rotate: '1.5deg',
-    demo_url: null,
+    rotate: '-1.2deg',
   },
 };
 
@@ -168,21 +168,8 @@ export function getProjectEmoji(name = '', description = '', tech = []) {
   return fallbackEmojis[Math.abs(hash) % fallbackEmojis.length];
 }
 
-// Additional projects (e.g. Android apps, AI tools)
+// Additional projects (e.g. Under Construction AI tools not yet in public repos)
 export const customProjects = [
-  {
-    name: 'Weather App',
-    description: 'Location-aware Android weather monitoring application with real-time forecast alerts and notification triggers.',
-    tech: ['Java', 'Android Studio', 'Firebase', 'Weather API'],
-    tag: 'Android App',
-    emoji: '🌦️',
-    color: 'sticky-blue',
-    pin_color: 'pin-blue',
-    rotate: '1.5deg',
-    github_url: 'https://github.com/someshwar-songara',
-    demo_url: null,
-    year: '2025',
-  },
   {
     name: 'Jarvis Local AI Assistant',
     description: 'Local voice assistant that processes voice commands, triggers automations, and reasons via a local LLM backend.',
@@ -191,7 +178,7 @@ export const customProjects = [
     emoji: '🤖',
     color: 'sticky-pink',
     pin_color: 'pin-red',
-    rotate: '2deg',
+    rotate: '1.8deg',
     github_url: 'https://github.com/someshwar-songara',
     demo_url: null,
     year: '2026',
@@ -200,40 +187,15 @@ export const customProjects = [
 ];
 
 export const paletteCycle = [
+  { color: 'sticky-blue', pin_color: 'pin-blue', rotate: '-1.5deg' },
+  { color: 'sticky-purple', pin_color: 'pin-blue', rotate: '1.2deg' },
   { color: 'sticky-yellow', pin_color: 'pin-red', rotate: '-1.8deg' },
-  { color: 'sticky-blue', pin_color: 'pin-blue', rotate: '1.4deg' },
-  { color: 'sticky-green', pin_color: 'pin-green', rotate: '-1.2deg' },
+  { color: 'sticky-green', pin_color: 'pin-green', rotate: '1.4deg' },
+  { color: 'sticky-blue', pin_color: 'pin-blue', rotate: '-1.2deg' },
   { color: 'sticky-pink', pin_color: 'pin-red', rotate: '1.8deg' },
-  { color: 'sticky-purple', pin_color: 'pin-blue', rotate: '-1.5deg' },
 ];
 
 export const defaultProjects = [
-  {
-    name: 'Academic Diary',
-    description: 'Academic management web app to track assignments, deadlines and notes — built to solve real student productivity problems.',
-    tech: ['PHP', 'MySQL', 'JavaScript', 'HTML/CSS'],
-    tag: 'Web App',
-    emoji: '📓',
-    color: 'sticky-yellow',
-    pin_color: 'pin-red',
-    rotate: '-2deg',
-    github_url: 'https://github.com/someshwar-songara/academic-diary',
-    demo_url: null,
-    year: '2026',
-  },
-  {
-    name: 'Hospital Management 2.0',
-    description: 'Comprehensive hospital management system designed to streamline patient records, appointments, and staff workflows.',
-    tech: ['PHP', 'MySQL', 'JavaScript', 'HTML/CSS'],
-    tag: 'Web App',
-    emoji: '🏥',
-    color: 'sticky-green',
-    pin_color: 'pin-green',
-    rotate: '1.2deg',
-    github_url: 'https://github.com/someshwar-songara/Hospital-2.0',
-    demo_url: null,
-    year: '2026',
-  },
   {
     name: 'IP Chat',
     description: 'Real-time peer-to-peer web chat application with live messaging and direct network connectivity.',
@@ -248,43 +210,106 @@ export const defaultProjects = [
     year: '2026',
   },
   {
-    name: 'Weather App',
-    description: 'Android weather monitoring app that sends real-time notifications based on location-aware weather data.',
-    tech: ['Java', 'Android', 'Firebase', 'Weather API'],
-    tag: 'Android App',
-    emoji: '🌦️',
-    color: 'sticky-blue',
-    pin_color: 'pin-blue',
-    rotate: '1.5deg',
-    github_url: 'https://github.com/someshwar-songara',
-    demo_url: null,
-    year: '2025',
-  },
-  {
     name: 'Personal Portfolio',
-    description: 'This portfolio — a handwritten dev journal built in React with sticky-note cards, notebook textures and craft-style design.',
+    description: 'This dev journal portfolio — handcrafted with sticky-note physics, dynamic GitHub sync, and dark theme polish.',
     tech: ['React', 'CSS', 'JavaScript'],
     tag: 'Personal',
     emoji: '🌐',
     color: 'sticky-purple',
     pin_color: 'pin-blue',
-    rotate: '-1deg',
+    rotate: '1.2deg',
     github_url: 'https://github.com/someshwar-songara/portfolio',
     demo_url: 'https://portfolio-chi-eight-36.vercel.app',
     year: '2026',
   },
   {
+    name: 'Weather App',
+    description: 'Location-aware Android weather monitoring application with real-time forecast alerts and notification triggers.',
+    tech: ['Java', 'Android Studio', 'Firebase', 'Weather API'],
+    tag: 'Android App',
+    emoji: '🌦️',
+    color: 'sticky-yellow',
+    pin_color: 'pin-red',
+    rotate: '-1.8deg',
+    github_url: 'https://github.com/someshwar-songara/Weather-App',
+    demo_url: null,
+    year: '2025',
+  },
+  {
+    name: 'Hospital Management 2.0',
+    description: 'Comprehensive hospital management system designed to streamline patient records, appointments, and staff workflows.',
+    tech: ['PHP', 'MySQL', 'JavaScript', 'HTML/CSS'],
+    tag: 'Web App',
+    emoji: '🏥',
+    color: 'sticky-green',
+    pin_color: 'pin-green',
+    rotate: '1.4deg',
+    github_url: 'https://github.com/someshwar-songara/Hospital-2.0',
+    demo_url: null,
+    year: '2026',
+  },
+  {
+    name: 'Academic Diary',
+    description: 'Academic management web app to track assignments, deadlines, and notes — built to solve real student productivity problems.',
+    tech: ['PHP', 'MySQL', 'JavaScript', 'HTML/CSS'],
+    tag: 'Web App',
+    emoji: '📓',
+    color: 'sticky-blue',
+    pin_color: 'pin-blue',
+    rotate: '-1.2deg',
+    github_url: 'https://github.com/someshwar-songara/academic-diary',
+    demo_url: null,
+    year: '2026',
+  },
+  {
     name: 'Jarvis Local AI Assistant',
     description: 'Local AI voice assistant that responds to voice commands using speech recognition and an LLM backend.',
-    tech: ['Python', 'LLM', 'Speech Recognition'],
+    tech: ['Python', 'Local LLM', 'Speech Recognition'],
     tag: '🚧 Under Construction',
     emoji: '🤖',
     color: 'sticky-pink',
     pin_color: 'pin-red',
-    rotate: '2deg',
+    rotate: '1.8deg',
     github_url: 'https://github.com/someshwar-songara',
     demo_url: null,
     year: '2026',
     wip: true,
   },
 ];
+
+// Priority rank mapping strictly ensuring:
+// 1. IP Chat
+// 2. Personal Portfolio
+// 3. Weather App
+// 4. Hospital Management 2.0
+// 5. Academic Diary
+// 6. Jarvis Local AI Assistant
+export function getProjectPriorityRank(name = '', githubUrl = '') {
+  const norm = normalizeProjectKey(name);
+  const urlNorm = normalizeProjectKey(githubUrl);
+
+  // 1. IP Chat
+  if (norm.includes('ipchat') || urlNorm.includes('ipchat')) return 0;
+  // 2. Personal Portfolio
+  if (norm.includes('portfolio') || urlNorm.includes('portfolio')) return 1;
+  // 3. Weather App
+  if (norm.includes('weather') || urlNorm.includes('weather')) return 2;
+  // 4. Hospital Management 2.0
+  if (norm.includes('hospital') || urlNorm.includes('hospital')) return 3;
+  // 5. Academic Diary
+  if (norm.includes('academic') || norm.includes('diary') || urlNorm.includes('academic') || urlNorm.includes('diary')) return 4;
+  // 6. Jarvis Local AI Assistant
+  if (norm.includes('jarvis') || norm.includes('assistant') || urlNorm.includes('jarvis')) return 5;
+
+  return 100;
+}
+
+export function sortProjects(projects = []) {
+  return [...projects].sort((a, b) => {
+    const rankA = getProjectPriorityRank(a.name, a.github_url);
+    const rankB = getProjectPriorityRank(b.name, b.github_url);
+    if (rankA !== rankB) return rankA - rankB;
+    return (b.stars || 0) - (a.stars || 0);
+  });
+}
+

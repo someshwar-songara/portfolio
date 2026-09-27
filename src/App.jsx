@@ -18,7 +18,7 @@ const Chatbot = lazy(() => import('./components/Chatbot/Chatbot'));
 
 export default function App() {
   const { isDark, toggleTheme } = useTheme();
-  const { profile, projects } = useGitHubData();
+  const { profile, projects, syncStatus, lastSynced, syncNow, rateLimitReset } = useGitHubData();
   const [renderDeferred, setRenderDeferred] = useState(false);
   const [botLoaded, setBotLoaded] = useState(false);
   const [botInitialOpen, setBotInitialOpen] = useState(false);
@@ -73,7 +73,13 @@ export default function App() {
       <main id="main-content">
         <Hero profile={profile} />
         <About />
-        <Projects projects={projects} />
+        <Projects
+          projects={projects}
+          syncStatus={syncStatus}
+          lastSynced={lastSynced}
+          syncNow={syncNow}
+          rateLimitReset={rateLimitReset}
+        />
         {renderDeferred && (
           <>
             <WhatIBring />

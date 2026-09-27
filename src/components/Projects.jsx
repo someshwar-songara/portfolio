@@ -20,16 +20,71 @@ function getTechIcon(name = '') {
   return '⚙️';
 }
 
-export default function Projects({ projects = [] }) {
+export default function Projects({
+  projects = [],
+  syncStatus = 'synced',
+  lastSynced = null,
+  syncNow = () => {},
+  rateLimitReset = null,
+}) {
+  const formatTime = (ts) => {
+    if (!ts) return '';
+    try {
+      return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return '';
+    }
+  };
+
+  const getSyncTooltip = () => {
+    if (syncStatus === 'syncing') return 'Fetching latest repository data from GitHub API...';
+    if (syncStatus === 'rate-limited') {
+      const resetTime = rateLimitReset ? formatTime(rateLimitReset * 1000) : '';
+      return `GitHub API rate limit reached for this network${resetTime ? ` (resets ~${resetTime})` : ''}. Displaying verified cached project data. Click to recheck.`;
+    }
+    if (lastSynced) {
+      return `Live synchronized with GitHub (Last checked: ${formatTime(lastSynced)}). Click to refresh now.`;
+    }
+    return 'Live sync connected to GitHub API. Click to refresh projects.';
+  };
+
   return (
     <section id="projects" className="section section--cork" aria-label="Projects">
       <div className="container">
         <header className="section-header reveal">
           <div className="section-badge-row">
             <span className="section-label section-label--light">📌 pinned to the board</span>
-            <span className="sync-badge" title="Live sync enabled with GitHub API">
-              <span className="sync-badge-dot"></span> Live GitHub Sync
-            </span>
+            <button
+              type="button"
+              className={`sync-badge sync-badge--${syncStatus}`}
+              onClick={() => syncNow()}
+              disabled={syncStatus === 'syncing'}
+              title={getSyncTooltip()}
+              aria-label={getSyncTooltip()}
+            >
+              <span className={`sync-badge-dot sync-badge-dot--${syncStatus}`} aria-hidden="true"></span>
+              <span className="sync-badge-label">
+                {syncStatus === 'syncing'
+                  ? 'Syncing GitHub...'
+                  : syncStatus === 'rate-limited'
+                  ? 'Live GitHub (Cached)'
+                  : 'Live GitHub Sync'}
+              </span>
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`sync-badge-icon ${syncStatus === 'syncing' ? 'sync-icon--spin' : ''}`}
+                aria-hidden="true"
+              >
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+              </svg>
+            </button>
           </div>
           <h2 className="section-title section-title--light">Things I've Built</h2>
           <p className="section-note section-note--light">

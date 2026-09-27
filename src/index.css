@@ -1720,32 +1720,135 @@ body[data-theme="dark"] #about .info-card-sub {
 /* ============================================================
    PROJECTS
    ============================================================ */
+#projects {
+  scroll-margin-top: calc(var(--nav-h, 68px) + 1.25rem);
+}
+
+.section-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 0 auto 0.75rem;
+  width: 100%;
+}
+.section-badge-row .section-label {
+  display: inline-block;
+  margin-bottom: 0;
+}
+.section-badge-row .sync-badge {
+  margin-left: 0;
+}
+
 /* GitHub live sync badge */
 .sync-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   font-family: var(--font-ui);
   font-size: 0.72rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 0.2rem 0.65rem;
+  padding: 0.24rem 0.75rem;
   border-radius: 999px;
   background: rgba(34, 197, 94, 0.12);
   color: #15803d;
   border: 1px solid rgba(34, 197, 94, 0.28);
   vertical-align: middle;
   margin-left: 0.65rem;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  user-select: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
+.sync-badge:hover {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.45);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(34, 197, 94, 0.2);
+}
+.sync-badge:active {
+  transform: translateY(0);
+}
+.sync-badge:disabled {
+  cursor: wait;
+  opacity: 0.85;
+}
+.sync-badge-label {
+  display: inline-block;
+  line-height: 1;
+}
+.sync-badge-icon {
+  margin-left: 0.15rem;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.25s ease;
+  flex-shrink: 0;
+}
+.sync-badge:hover .sync-badge-icon {
+  opacity: 1;
+  transform: rotate(45deg);
+}
+.sync-icon--spin {
+  animation: syncSpin 0.8s linear infinite !important;
+  opacity: 1 !important;
+}
+@keyframes syncSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .sync-badge-dot {
-  width: 6px;
-  height: 6px;
+  width: 6.5px;
+  height: 6.5px;
   border-radius: 50%;
   background: #22c55e;
   box-shadow: 0 0 6px #22c55e;
   animation: pulseDot 2s infinite ease-in-out;
+  flex-shrink: 0;
 }
+.sync-badge-dot--syncing {
+  background: #3b82f6;
+  box-shadow: 0 0 6px #3b82f6;
+  animation: pulseDot 1s infinite ease-in-out;
+}
+.sync-badge-dot--rate-limited {
+  background: #f59e0b;
+  box-shadow: 0 0 6px #f59e0b;
+}
+.sync-badge-dot--error {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+.sync-badge--syncing {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+  border-color: rgba(59, 130, 246, 0.35);
+}
+.sync-badge--syncing:hover {
+  background: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 3px 10px rgba(59, 130, 246, 0.2);
+}
+
+.sync-badge--rate-limited {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+.sync-badge--rate-limited:hover {
+  background: rgba(245, 158, 11, 0.2);
+  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.2);
+}
+
+.sync-badge--error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
 @keyframes pulseDot {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.35; transform: scale(0.8); }
@@ -1755,6 +1858,34 @@ body[data-theme="dark"] .sync-badge {
   background: rgba(34, 197, 94, 0.16);
   color: #4ade80;
   border-color: rgba(74, 222, 128, 0.35);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+body[data-theme="dark"] .sync-badge:hover {
+  background: rgba(34, 197, 94, 0.25);
+  box-shadow: 0 3px 12px rgba(74, 222, 128, 0.25);
+}
+body[data-theme="dark"] .sync-badge--syncing {
+  background: rgba(96, 165, 250, 0.16);
+  color: #93c5fd;
+  border-color: rgba(96, 165, 250, 0.38);
+}
+body[data-theme="dark"] .sync-badge--syncing:hover {
+  background: rgba(96, 165, 250, 0.26);
+  box-shadow: 0 3px 12px rgba(96, 165, 250, 0.25);
+}
+body[data-theme="dark"] .sync-badge--rate-limited {
+  background: rgba(251, 191, 36, 0.16);
+  color: #fde047;
+  border-color: rgba(251, 191, 36, 0.38);
+}
+body[data-theme="dark"] .sync-badge--rate-limited:hover {
+  background: rgba(251, 191, 36, 0.26);
+  box-shadow: 0 3px 12px rgba(251, 191, 36, 0.25);
+}
+body[data-theme="dark"] .sync-badge--error {
+  background: rgba(248, 113, 113, 0.15);
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.35);
 }
 
 .projects-grid {

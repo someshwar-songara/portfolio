@@ -1,1 +1,57 @@
-[{"name":"academic-diary","language":"PHP","html_url":"https://github.com/someshwar-songara/academic-diary","description":null,"homepage":null,"stargazers_count":0,"forks_count":0,"updated_at":"2026-06-07T10:41:06Z","fork":false},{"name":"Hospital-2.0","language":"PHP","html_url":"https://github.com/someshwar-songara/Hospital-2.0","description":null,"homepage":null,"stargazers_count":0,"forks_count":0,"updated_at":"2026-06-08T16:13:36Z","fork":false},{"name":"ip-chat","language":"JavaScript","html_url":"https://github.com/someshwar-songara/ip-chat","description":null,"homepage":"https://ip-chat-rho.vercel.app","stargazers_count":0,"forks_count":0,"updated_at":"2026-09-15T18:39:53Z","fork":false},{"name":"portfolio","language":"HTML","html_url":"https://github.com/someshwar-songara/portfolio","description":null,"homepage":"https://portfolio-chi-eight-36.vercel.app","stargazers_count":0,"forks_count":0,"updated_at":"2026-05-17T20:56:01Z","fork":false},{"name":"Weather-App","language":"Java","html_url":"https://github.com/someshwar-songara/Weather-App","description":null,"homepage":null,"stargazers_count":0,"forks_count":0,"updated_at":"2026-08-20T13:54:06Z","fork":false}]
+[
+  {
+    "name": "ip-chat",
+    "language": "JavaScript",
+    "html_url": "https://github.com/someshwar-songara/ip-chat",
+    "description": "Real-time peer-to-peer web chat application with live messaging and direct network connectivity.",
+    "homepage": "https://ip-chat-rho.vercel.app",
+    "stargazers_count": 0,
+    "forks_count": 0,
+    "updated_at": "2026-09-15T18:39:53Z",
+    "fork": false
+  },
+  {
+    "name": "portfolio",
+    "language": "HTML",
+    "html_url": "https://github.com/someshwar-songara/portfolio",
+    "description": "Handwritten dev journal portfolio built with React, CSS, and dynamic GitHub integration.",
+    "homepage": "https://portfolio-chi-eight-36.vercel.app",
+    "stargazers_count": 0,
+    "forks_count": 0,
+    "updated_at": "2026-05-17T20:56:01Z",
+    "fork": false
+  },
+  {
+    "name": "Weather-App",
+    "language": "Java",
+    "html_url": "https://github.com/someshwar-songara/Weather-App",
+    "description": "Location-aware Android weather monitoring application with real-time forecast alerts.",
+    "homepage": null,
+    "stargazers_count": 0,
+    "forks_count": 0,
+    "updated_at": "2026-08-20T13:54:06Z",
+    "fork": false
+  },
+  {
+    "name": "Hospital-2.0",
+    "language": "PHP",
+    "html_url": "https://github.com/someshwar-songara/Hospital-2.0",
+    "description": "Comprehensive hospital management system designed to streamline patient records, appointments, and staff workflows.",
+    "homepage": null,
+    "stargazers_count": 0,
+    "forks_count": 0,
+    "updated_at": "2026-06-08T16:13:36Z",
+    "fork": false
+  },
+  {
+    "name": "academic-diary",
+    "language": "PHP",
+    "html_url": "https://github.com/someshwar-songara/academic-diary",
+    "description": "Academic management web app to track assignments, deadlines, and notes — built to solve real student productivity problems.",
+    "homepage": null,
+    "stargazers_count": 0,
+    "forks_count": 0,
+    "updated_at": "2026-06-07T10:41:06Z",
+    "fork": false
+  }
+]
