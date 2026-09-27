@@ -13,23 +13,32 @@ export default function Hero({ profile }) {
 
   return (
     <section id="hero" aria-label="Introduction">
+      <div className="hero-ambient-glow hero-ambient-glow--1" aria-hidden="true"></div>
+      <div className="hero-ambient-glow hero-ambient-glow--2" aria-hidden="true"></div>
+
       <div className="hero-inner">
         {/* LEFT ─ intro text */}
         <div className="hero-left">
           {/* Status badge */}
           <div className="hero-status" title="Actively seeking software engineering internship opportunities">
-            <span className="status-dot" aria-hidden="true"></span>
-            <span>Open to Internships (2025–2026)</span>
+            <span className="status-beacon" aria-hidden="true">
+              <span className="status-beacon-ring"></span>
+              <span className="status-dot"></span>
+            </span>
+            <span className="hero-status-text">Open to Internships (2025–2026)</span>
             <span className="status-badge-sep" aria-hidden="true">·</span>
             <span className="status-remote-tag">Remote / On-site</span>
           </div>
 
           <p className="hero-greeting">Hi, I'm</p>
 
-          <h1 className="hero-name">Someshwar Songara</h1>
+          <h1 className="hero-name">
+            Someshwar <span className="hero-name-accent">Songara</span>
+          </h1>
 
           <div className="hero-title-wrap">
             <span className="hero-title">Aspiring Software Engineer</span>
+            <span className="hero-marker-stroke" aria-hidden="true"></span>
           </div>
 
           <div className="hero-tags" aria-label="Specializations">
@@ -53,6 +62,9 @@ export default function Hero({ profile }) {
                 <rect x="14" y="14" width="7" height="7" rx="1" />
               </svg>
               View My Work
+              <svg className="btn-arrow" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </a>
 
             <button
@@ -94,6 +106,7 @@ export default function Hero({ profile }) {
           <div className="avatar-wrap">
             <div className="avatar-ambient-glow" aria-hidden="true"></div>
             <div className="avatar-frame avatar-frame--square">
+              <div className="avatar-pin" aria-hidden="true"></div>
               <picture>
                 <source srcSet="/avatar.webp" type="image/webp" />
                 <img
@@ -111,6 +124,7 @@ export default function Hero({ profile }) {
           </div>
 
           <div className="hero-info-note" aria-label="Quick Highlights">
+            <div className="hero-note-tape" aria-hidden="true"></div>
             <div className="hero-note-pin" aria-hidden="true"></div>
             <div className="hero-note-header">
               <span className="hero-note-badge">Quick Profile</span>

@@ -98,6 +98,7 @@ export default function Contact() {
         </header>
 
         <div className="contact-sheet reveal">
+          <div className="airmail-strip" aria-hidden="true"></div>
           <div className="contact-grid">
             <div className="contact-inner contact-inner--links">
               <span className="contact-badge">Available for work</span>

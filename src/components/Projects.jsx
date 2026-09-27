@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { getProjectEmoji } from '../data/projects';
 
 // Helper to provide tech icons for visual distinction
@@ -27,6 +28,8 @@ export default function Projects({
   syncNow = () => {},
   rateLimitReset = null,
 }) {
+  const [activeFilter, setActiveFilter] = useState('all');
+
   const formatTime = (ts) => {
     if (!ts) return '';
     try {
@@ -47,6 +50,45 @@ export default function Projects({
     }
     return 'Live sync connected to GitHub API. Click to refresh projects.';
   };
+
+  const filterCategories = [
+    { id: 'all', label: 'All Projects', emoji: '📌' },
+    { id: 'web', label: 'Web Apps', emoji: '🌐' },
+    { id: 'android', label: 'Android', emoji: '📱' },
+    { id: 'ai', label: 'AI & Systems', emoji: '🤖' },
+  ];
+
+  const matchesFilter = (project, filter) => {
+    if (filter === 'all') return true;
+    const tag = (project.tag || '').toLowerCase();
+    const name = (project.name || '').toLowerCase();
+    const tech = (project.tech || []).join(' ').toLowerCase();
+
+    if (filter === 'web') {
+      return (
+        tag.includes('web') ||
+        tag.includes('personal') ||
+        tech.includes('react') ||
+        tech.includes('php') ||
+        tech.includes('javascript')
+      );
+    }
+    if (filter === 'android') {
+      return tag.includes('android') || tech.includes('android') || tech.includes('java');
+    }
+    if (filter === 'ai') {
+      return (
+        tag.includes('ai') ||
+        tag.includes('construction') ||
+        tech.includes('python') ||
+        tech.includes('llm') ||
+        name.includes('jarvis')
+      );
+    }
+    return true;
+  };
+
+  const filteredProjects = projects.filter((p) => matchesFilter(p, activeFilter));
 
   return (
     <section id="projects" className="section section--cork" aria-label="Projects">
@@ -86,14 +128,37 @@ export default function Projects({
               </svg>
             </button>
           </div>
+
           <h2 className="section-title section-title--light">Things I've Built</h2>
           <p className="section-note section-note--light">
             Real code. Real problems. Practical engineering projects from full-stack web to mobile &amp; edge AI.
           </p>
+
+          {/* Interactive Category Filter Pills */}
+          <div className="projects-filter-bar" role="tablist" aria-label="Filter projects by category">
+            {filterCategories.map((cat) => {
+              const count = projects.filter((p) => matchesFilter(p, cat.id)).length;
+              const isActive = activeFilter === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  className={`project-filter-pill ${isActive ? 'project-filter-pill--active' : ''}`}
+                  onClick={() => setActiveFilter(cat.id)}
+                >
+                  <span className="filter-pill-emoji" aria-hidden="true">{cat.emoji}</span>
+                  <span className="filter-pill-label">{cat.label}</span>
+                  <span className="filter-pill-count">{count}</span>
+                </button>
+              );
+            })}
+          </div>
         </header>
 
         <div className="projects-grid">
-          {projects.map((project, i) => (
+          {filteredProjects.map((project, i) => (
             <article
               key={`${project.name}-${i}`}
               className={`project-card ${project.color || 'sticky-yellow'}${
@@ -118,7 +183,12 @@ export default function Projects({
                   <span className="window-dot dot--yellow"></span>
                   <span className="window-dot dot--green"></span>
                 </div>
-                <span className="project-branch-tag">git:main</span>
+                <div className="project-branch-wrap">
+                  <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122V6A2.5 2.5 0 0110 8.5H6a1 1 0 00-1 1v1.128a2.251 2.251 0 11-1.5 0V5.372a2.25 2.25 0 111.5 0v1.836A2.492 2.492 0 016 7h4a1 1 0 001-1v-.628A2.25 2.25 0 019.5 3.25zM4.25 12a.75.75 0 100 1.5.75.75 0 000-1.5zM3.5 3.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0z" />
+                  </svg>
+                  <span className="project-branch-tag">git:main</span>
+                </div>
               </div>
 
               {/* Card header */}
@@ -181,6 +251,7 @@ export default function Projects({
                     className="project-btn project-btn--demo"
                     aria-label={`View live demo of ${project.name}`}
                   >
+                    <span className="live-demo-dot" aria-hidden="true"></span>
                     <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                       <polyline points="15 3 21 3 21 9" />

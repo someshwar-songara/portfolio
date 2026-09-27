@@ -11,6 +11,13 @@ export default function About() {
         <div className="about-grid">
           {/* Journal letter */}
           <article className="journal-entry reveal" aria-label="Personal introduction">
+            {/* Realistic Binder Holes */}
+            <div className="journal-binder-holes" aria-hidden="true">
+              <span className="binder-hole"></span>
+              <span className="binder-hole"></span>
+              <span className="binder-hole"></span>
+            </div>
+
             <div className="journal-top-row">
               <p className="journal-date">📍 Ujjain, Madhya Pradesh · 2026</p>
               <div className="journal-stamp" aria-hidden="true">
@@ -31,7 +38,7 @@ export default function About() {
                 I don't just follow tutorials — I build real things. A hospital management system, an academic productivity diary, and a local voice AI assistant. Software that solves actual daily challenges.
               </p>
               <p>
-                The goal right now: <span className="journal-highlight">land a meaningful software engineering internship</span> where I can contribute to production software, collaborate with mentor engineers, and ship code that matters.
+                The goal right now: <span className="journal-highlight journal-highlight--emerald">land a meaningful software engineering internship</span> where I can contribute to production software, collaborate with mentor engineers, and ship code that matters.
               </p>
               <p className="journal-sign">— Someshwar Songara</p>
             </div>
@@ -40,6 +47,7 @@ export default function About() {
           {/* Info cards column */}
           <div className="about-cards" aria-label="Quick facts">
             <div className="info-card reveal reveal-delay-1">
+              <div className="info-card-tape" aria-hidden="true"></div>
               <span className="info-card-icon" aria-hidden="true">🎓</span>
               <div>
                 <p className="info-card-title">B.Tech CSE</p>
@@ -48,6 +56,7 @@ export default function About() {
             </div>
 
             <div className="info-card reveal reveal-delay-2">
+              <div className="info-card-tape" aria-hidden="true"></div>
               <span className="info-card-icon" aria-hidden="true">📍</span>
               <div>
                 <p className="info-card-title">Ujjain, India</p>
@@ -56,6 +65,7 @@ export default function About() {
             </div>
 
             <div className="info-card reveal reveal-delay-3">
+              <div className="info-card-tape" aria-hidden="true"></div>
               <span className="info-card-icon" aria-hidden="true">💻</span>
               <div>
                 <p className="info-card-title">Full-Stack &amp; Android</p>
@@ -64,6 +74,7 @@ export default function About() {
             </div>
 
             <div className="info-card reveal reveal-delay-4">
+              <div className="info-card-tape" aria-hidden="true"></div>
               <span className="info-card-icon" aria-hidden="true">🤖</span>
               <div>
                 <p className="info-card-title">AI &amp; Speech Tech</p>
