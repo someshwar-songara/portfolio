@@ -165,36 +165,6 @@ body[data-theme="dark"] .theme-toggle {
   color: var(--ink-dark);
 }
 
-body[data-theme="dark"] .nav-logo-text {
-  font-size: 1.75rem;
-}
-
-body[data-theme="dark"] .nav-tagline {
-  font-size: .95rem;
-}
-
-body[data-theme="dark"] .hero-greeting,
-body[data-theme="dark"] .hero-subtitle,
-body[data-theme="dark"] .hero-description,
-body[data-theme="dark"] .hero-info-note p,
-body[data-theme="dark"] .journal-body p,
-body[data-theme="dark"] .project-card .project-desc,
-body[data-theme="dark"] .link-value,
-body[data-theme="dark"] .contact-sub,
-body[data-theme="dark"] .contact-link-item {
-  font-size: 1.15rem;
-}
-
-body[data-theme="dark"] .nav-link,
-body[data-theme="dark"] .hero-status,
-body[data-theme="dark"] .section-label,
-body[data-theme="dark"] .btn-primary,
-body[data-theme="dark"] .btn-outline,
-body[data-theme="dark"] .nav-cta,
-body[data-theme="dark"] .nav-resume {
-  font-size: 1.08rem;
-}
-
 body[data-theme="dark"] .hero-status {
   background: rgba(16, 185, 129, 0.12);
   border-color: rgba(52, 211, 153, 0.35);
