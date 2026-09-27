@@ -154,6 +154,7 @@ ${proj.summary}
 - **Status:** Fully deployed and live on Vercel!
 
 Would you like to test the live chat demo or view the source code?`,
+      projectCards: [proj],
       suggestions: ['🚀 Show other projects', '🛠️ What other web apps has he made?', '📫 Contact Someshwar'],
       actions: [
         { label: 'Open Live Demo 🌐', type: 'link', url: proj.demoUrl, icon: '🔗' },
@@ -175,6 +176,7 @@ ${proj.summary}
 - **Stack:** PHP, MySQL, JavaScript, HTML5/CSS3
 - **Features:** Patient electronic records, appointment management, doctor scheduling, and prescription workflows.
 - **Why it matters:** Demonstrates full-stack CRUD architecture, relational database integrity, and practical software engineering for enterprise domains.`,
+      projectCards: [proj],
       suggestions: ['📓 What is Academic Diary?', '💬 Tell me about IP Chat', '🛠️ Tell me about his PHP experience'],
       actions: [
         { label: 'View on GitHub', type: 'link', url: proj.githubUrl, icon: '⭐' },
@@ -195,6 +197,7 @@ ${proj.summary}
 - **Stack:** PHP, MySQL, JavaScript, HTML/CSS
 - **Problem Solved:** Helps college students track chaotic schedules, assignment deadlines, lecture notes, and syllabus milestones in one organized hub.
 - Built to solve a real, everyday challenge that Someshwar and his college peers experienced!`,
+      projectCards: [proj],
       suggestions: ['🏥 Tell me about Hospital Management', '💬 Tell me about IP Chat', '📱 Does he have Android apps?'],
       actions: [
         { label: 'View on GitHub', type: 'link', url: proj.githubUrl, icon: '⭐' },
@@ -215,6 +218,7 @@ ${proj.summary}
 - **Stack:** Java, Android Studio, Firebase, OpenWeather API
 - **Features:** GPS auto-location detection, 5-day weather forecast, humidity & wind metrics, and real-time push alerts for unexpected rainfall or severe storms.
 - Showcases Someshwar's ability to build native mobile user experiences with asynchronous API data handling.`,
+      projectCards: [proj],
       suggestions: ['🤖 Tell me about Jarvis AI', '💬 Show web apps', '🛠️ What are his Android skills?'],
       actions: [
         { label: 'Someshwar GitHub', type: 'link', url: proj.githubUrl, icon: '⭐' },
@@ -234,10 +238,34 @@ ${proj.summary}
 🔑 **Key Highlights:**
 - **Stack:** Python, Local LLM inference (e.g. Ollama/edge models), Speech Recognition, PyAudio
 - **Philosophy:** Privacy-first intelligence. Unlike commercial assistants that ship audio to the cloud, Jarvis operates locally to automate desktop tasks, search info, and reason over data securely.`,
+      projectCards: [proj],
       suggestions: ['🛠️ Tell me about his Python & AI skills', '🚀 Show all projects', '💼 Hire Someshwar'],
       actions: [
         { label: 'Explore GitHub Profile', type: 'link', url: proj.githubUrl, icon: '⭐' },
         { label: 'View on Page', type: 'scroll', target: 'projects', icon: '📌' },
+      ],
+    };
+  }
+
+  // 7.5. LIVE DEMOS
+  if (containsAny(['live demo', 'live app', 'demo link', 'working demo', 'try it out', 'deployed'])) {
+    const liveProjects = SOMESHWAR_DATA.projects.filter((p) => p.demoUrl);
+    return {
+      text: `🌐 **Live Working Project Demos**
+
+You can test these applications right now in your browser:
+
+1. **IP Chat** 💬 — Real-time peer-to-peer web chat with WebSockets.
+   👉 [Open IP Chat Demo](https://ip-chat-rho.vercel.app)
+2. **Dev Journal Portfolio** 📓 — This interactive React portfolio website!
+   👉 [Open Portfolio](https://portfolio-chi-eight-36.vercel.app)
+
+Check out the interactive cards below:`,
+      projectCards: liveProjects,
+      suggestions: ['💬 Tell me more about IP Chat', '🚀 Show all 6 projects', '📫 Contact Someshwar'],
+      actions: [
+        { label: 'Launch IP Chat 🚀', type: 'link', url: 'https://ip-chat-rho.vercel.app', icon: '🌐' },
+        { label: 'View on GitHub', type: 'link', url: SOMESHWAR_DATA.contact.github, icon: '🐙' },
       ],
     };
   }
@@ -247,24 +275,21 @@ ${proj.summary}
     return {
       text: `🚀 **Someshwar's Featured Projects**
 
-Here are some of Someshwar's proudest builds:
+Here are Someshwar's key projects in priority order:
 
-1. **IP Chat** 💬 *(Web App)*
-   Real-time P2P chat with WebSockets & live demo on Vercel.
-2. **Hospital Management 2.0** 🏥 *(Full-Stack PHP/MySQL)*
-   Complete patient, doctor & appointment management system.
-3. **Academic Diary** 📓 *(Productivity Web App)*
-   Assignment deadlines, student timetables, and notes organizer.
-4. **Weather App** 🌦️ *(Native Android / Java / Firebase)*
-   Location-based forecast with push notification alerts.
-5. **Jarvis Local AI Assistant** 🤖 *(Python / Local LLMs)*
-   Voice-controlled private offline assistant.
-6. **Dev Journal Portfolio** 🌐 *(React / Vite)*
-   This interactive sticky-note styled portfolio!`,
+1. **IP Chat** 💬 *(Web App / WebSockets / Live on Vercel)*
+2. **Personal Portfolio** 🌐 *(React 18 / Dev Journal / GitHub Sync)*
+3. **Weather App** 🌦️ *(Native Android / Java / Firebase)*
+4. **Hospital Management 2.0** 🏥 *(Full-Stack PHP / MySQL)*
+5. **Academic Diary** 📓 *(Student Productivity / PHP / MySQL)*
+6. **Jarvis Local AI Assistant** 🤖 *(Python / Local LLMs / Active Build)*
+
+Tap any interactive card below to test live demos or view source code:`,
+      projectCards: SOMESHWAR_DATA.projects,
       suggestions: [
         '💬 Tell me about IP Chat',
-        '🏥 Tell me about Hospital 2.0',
         '🌦️ Tell me about Weather App',
+        '🏥 Tell me about Hospital 2.0',
         '🤖 Tell me about Jarvis AI',
       ],
       actions: [

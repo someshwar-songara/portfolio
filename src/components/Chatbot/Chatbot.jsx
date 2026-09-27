@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { WELCOME_MESSAGE } from '../../data/botKnowledge';
 import { generateBotResponse, playBotSound } from '../../utils/botEngine';
 import './Chatbot.css';
@@ -6,6 +6,7 @@ import './Chatbot.css';
 export default function Chatbot({ initialOpen = false }) {
   const [isOpen, setIsOpen] = useState(initialOpen);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -13,20 +14,52 @@ export default function Chatbot({ initialOpen = false }) {
   const [unreadCount, setUnreadCount] = useState(initialOpen ? 0 : 1);
   const [isListening, setIsListening] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState(null);
+  const [copiedMsgId, setCopiedMsgId] = useState(null);
+  const [showGreetingToast, setShowGreetingToast] = useState(false);
 
+  const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
+  const recognitionRef = useRef(null);
+
+  // External trigger event (e.g. from Navbar "Ask AI" button)
   useEffect(() => {
     const handleOpenEvent = () => {
       setIsOpen(true);
       setIsMinimized(false);
       setUnreadCount(0);
+      setShowGreetingToast(false);
     };
     window.addEventListener('open-chatbot', handleOpenEvent);
     return () => window.removeEventListener('open-chatbot', handleOpenEvent);
   }, []);
 
-  const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
-  const recognitionRef = useRef(null);
+  // Show friendly greeting toast after 3 seconds if chat is closed
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isOpen) {
+        setShowGreetingToast(true);
+      }
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [isOpen]);
+
+  // Keyboard shortcut: ESC to minimize/close
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        if (isExpanded) {
+          setIsExpanded(false);
+        } else if (!isMinimized) {
+          setIsMinimized(true);
+        } else {
+          setIsOpen(false);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isMinimized, isExpanded]);
 
   // Initialize Speech Recognition if supported
   useEffect(() => {
@@ -42,7 +75,6 @@ export default function Chatbot({ initialOpen = false }) {
         const transcript = event.results[0][0].transcript;
         if (transcript) {
           setInputValue(transcript);
-          // Automatically send after voice capture
           setTimeout(() => {
             handleSendMessage(transcript);
           }, 300);
@@ -50,33 +82,36 @@ export default function Chatbot({ initialOpen = false }) {
         setIsListening(false);
       };
 
-      recognition.onerror = () => {
-        setIsListening(false);
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-      };
+      recognition.onerror = () => setIsListening(false);
+      recognition.onend = () => setIsListening(false);
 
       recognitionRef.current = recognition;
     }
   }, []);
 
+  // Cancel speech synthesis on unmount
+  useEffect(() => {
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
   // Auto-scroll messages to bottom
-  const scrollToBottom = (behavior = 'smooth') => {
+  const scrollToBottom = useCallback((behavior = 'smooth') => {
     messagesEndRef.current?.scrollIntoView({ behavior });
-  };
+  }, []);
 
   useEffect(() => {
     if (isOpen && !isMinimized) {
       scrollToBottom();
-      // Focus input when opened
       const timer = setTimeout(() => {
         inputRef.current?.focus();
       }, 150);
       return () => clearTimeout(timer);
     }
-  }, [isOpen, isMinimized, messages, isTyping]);
+  }, [isOpen, isMinimized, messages, isTyping, scrollToBottom]);
 
   // Toggle open
   const handleToggleOpen = () => {
@@ -84,6 +119,7 @@ export default function Chatbot({ initialOpen = false }) {
       setIsOpen(true);
       setIsMinimized(false);
       setUnreadCount(0);
+      setShowGreetingToast(false);
       playBotSound('pop', isMuted);
     } else {
       setIsOpen(false);
@@ -106,7 +142,72 @@ export default function Chatbot({ initialOpen = false }) {
     }
   };
 
-  // Handle Action buttons (e.g. scroll to page section or open external link)
+  // Text-To-Speech (TTS) Voice playback
+  const handleToggleSpeak = (msgId, text) => {
+    if (!('speechSynthesis' in window)) return;
+
+    if (speakingMsgId === msgId) {
+      window.speechSynthesis.cancel();
+      setSpeakingMsgId(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    // Clean markdown symbols for cleaner speech
+    const cleanSpeech = text
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+      .replace(/[#*`_~]/g, '');
+
+    const utterance = new SpeechSynthesisUtterance(cleanSpeech);
+    utterance.rate = 1.05;
+    utterance.pitch = 1.0;
+
+    utterance.onstart = () => setSpeakingMsgId(msgId);
+    utterance.onend = () => setSpeakingMsgId(null);
+    utterance.onerror = () => setSpeakingMsgId(null);
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // Copy message text to clipboard
+  const handleCopyMessage = async (msgId, text) => {
+    try {
+      const cleanText = text
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\[(.*?)\]\((.*?)\)/g, '$1 ($2)');
+      await navigator.clipboard.writeText(cleanText);
+      setCopiedMsgId(msgId);
+      setTimeout(() => setCopiedMsgId(null), 2000);
+    } catch {
+      // Fallback
+    }
+  };
+
+  // Export / Download conversation transcript
+  const handleExportTranscript = () => {
+    const header = `====================================================\nSOMESH AI PORTFOLIO CHAT TRANSCRIPT\nDate: ${new Date().toLocaleString()}\nPortfolio: https://someshwar-songara.github.io/portfolio\n====================================================\n\n`;
+    const body = messages
+      .map((m) => {
+        const time = new Date(m.timestamp).toLocaleTimeString();
+        const role = m.sender === 'user' ? 'YOU' : 'SOMESH AI';
+        const clean = m.text.replace(/\*\*(.*?)\*\*/g, '$1');
+        return `[${time}] ${role}:\n${clean}\n`;
+      })
+      .join('\n----------------------------------------------------\n\n');
+
+    const blob = new Blob([header + body], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Somesh_AI_Chat_Transcript_${Date.now()}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // Handle Action buttons (e.g. scroll to section or open link)
   const handleActionClick = (action) => {
     if (action.type === 'scroll') {
       const target = document.getElementById(action.target);
@@ -115,7 +216,13 @@ export default function Chatbot({ initialOpen = false }) {
         const top = target.getBoundingClientRect().top + window.scrollY - navH;
         window.scrollTo({ top, behavior: 'smooth' });
 
-        // On mobile, close or minimize chat so user can see section
+        // Highlight flash on target
+        target.classList.add('section-highlight-pulse');
+        setTimeout(() => {
+          target.classList.remove('section-highlight-pulse');
+        }, 2200);
+
+        // On mobile, minimize chat so user can see section
         if (window.innerWidth <= 768) {
           setIsMinimized(true);
         }
@@ -130,7 +237,6 @@ export default function Chatbot({ initialOpen = false }) {
     const query = (textToSend || inputValue).trim();
     if (!query || isTyping) return;
 
-    // Play send chime
     playBotSound('send', isMuted);
 
     const userMsg = {
@@ -144,8 +250,7 @@ export default function Chatbot({ initialOpen = false }) {
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate smart thinking delay
-    const delay = Math.min(1000, Math.max(400, query.length * 20));
+    const delay = Math.min(850, Math.max(350, query.length * 18));
 
     setTimeout(() => {
       const responseData = generateBotResponse(query, messages);
@@ -156,6 +261,7 @@ export default function Chatbot({ initialOpen = false }) {
         text: responseData.text,
         suggestions: responseData.suggestions || [],
         actions: responseData.actions || [],
+        projectCards: responseData.projectCards || [],
         timestamp: new Date(),
       };
 
@@ -177,6 +283,10 @@ export default function Chatbot({ initialOpen = false }) {
   };
 
   const handleResetChat = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      setSpeakingMsgId(null);
+    }
     setMessages([
       {
         ...WELCOME_MESSAGE,
@@ -190,8 +300,6 @@ export default function Chatbot({ initialOpen = false }) {
   // Helper to render bold markdown and links cleanly
   const renderFormattedText = (content) => {
     if (!content) return null;
-
-    // Split paragraphs
     const paragraphs = content.split('\n\n');
 
     return paragraphs.map((para, pIdx) => {
@@ -199,7 +307,6 @@ export default function Chatbot({ initialOpen = false }) {
       return (
         <p key={pIdx} className="bot-p">
           {lines.map((line, lIdx) => {
-            // Parse bold (**text**) and markdown links [text](url)
             const parts = [];
             const regex = /(\*\*.*?\*\*|\[.*?\]\(.*?\))/g;
             let lastIndex = 0;
@@ -254,6 +361,30 @@ export default function Chatbot({ initialOpen = false }) {
 
   return (
     <aside className="chatbot-root" aria-label="Someshwar's Portfolio AI Assistant">
+      {/* Floating Greeting Toast on Page Load */}
+      {showGreetingToast && !isOpen && (
+        <div className="chatbot-greeting-toast" role="status">
+          <div className="toast-content" onClick={handleToggleOpen}>
+            <span className="toast-emoji">👋</span>
+            <div className="toast-text">
+              <strong>Need quick info?</strong>
+              <span>Ask Somesh AI about projects &amp; skills!</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="toast-close"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowGreetingToast(false);
+            }}
+            aria-label="Dismiss greeting"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Floating Launcher Button */}
       <button
         type="button"
@@ -271,7 +402,7 @@ export default function Chatbot({ initialOpen = false }) {
 
         <span className="chatbot-trigger-label">
           <span className="chatbot-trigger-label-title">Somesh AI</span>
-          <span className="chatbot-trigger-label-sub">Ask me anything!</span>
+          <span className="chatbot-trigger-label-sub">Ask anything</span>
         </span>
 
         {unreadCount > 0 && !isOpen && (
@@ -284,7 +415,7 @@ export default function Chatbot({ initialOpen = false }) {
       {/* Main Chat Window */}
       {isOpen && (
         <div
-          className={`chatbot-window ${isMinimized ? 'minimized' : ''}`}
+          className={`chatbot-window ${isMinimized ? 'minimized' : ''} ${isExpanded ? 'expanded' : ''}`}
           role="dialog"
           aria-labelledby="chatbot-heading"
         >
@@ -298,9 +429,9 @@ export default function Chatbot({ initialOpen = false }) {
               <div className="chatbot-header-info">
                 <h3 id="chatbot-heading" className="chatbot-header-title">
                   Somesh AI
-                  <span className="chatbot-header-tag">assistant</span>
+                  <span className="chatbot-header-tag">Interactive Assistant</span>
                 </h3>
-                <p className="chatbot-header-sub">Ask about Someshwar's work</p>
+                <p className="chatbot-header-sub">Dev Journal Knowledge Hub</p>
               </div>
             </div>
 
@@ -316,6 +447,17 @@ export default function Chatbot({ initialOpen = false }) {
                 {isMuted ? '🔇' : '🔊'}
               </button>
 
+              {/* Export Transcript */}
+              <button
+                type="button"
+                className="chatbot-ctrl-btn"
+                onClick={handleExportTranscript}
+                title="Download chat transcript"
+                aria-label="Download chat transcript"
+              >
+                📥
+              </button>
+
               {/* Reset Chat */}
               <button
                 type="button"
@@ -325,6 +467,17 @@ export default function Chatbot({ initialOpen = false }) {
                 aria-label="Restart conversation"
               >
                 🔄
+              </button>
+
+              {/* Expand/Compact */}
+              <button
+                type="button"
+                className="chatbot-ctrl-btn chatbot-ctrl-btn--expand"
+                onClick={() => setIsExpanded(!isExpanded)}
+                title={isExpanded ? 'Standard view' : 'Wide reading mode'}
+                aria-label={isExpanded ? 'Standard view' : 'Wide reading mode'}
+              >
+                {isExpanded ? '🗗' : '🗖'}
               </button>
 
               {/* Minimize/Maximize */}
@@ -367,9 +520,82 @@ export default function Chatbot({ initialOpen = false }) {
                     )}
 
                     <div className="chat-msg-bubble">
+                      {/* Top utilities per message (Speak & Copy) */}
+                      {msg.sender === 'bot' && (
+                        <div className="chat-msg-toolbar">
+                          <button
+                            type="button"
+                            className={`msg-tool-btn ${speakingMsgId === msg.id ? 'is-speaking' : ''}`}
+                            onClick={() => handleToggleSpeak(msg.id, msg.text)}
+                            title={speakingMsgId === msg.id ? 'Stop reading' : 'Read message aloud'}
+                            aria-label="Read message aloud"
+                          >
+                            {speakingMsgId === msg.id ? '⏹️ Speaking...' : '🔊 Read'}
+                          </button>
+
+                          <button
+                            type="button"
+                            className="msg-tool-btn"
+                            onClick={() => handleCopyMessage(msg.id, msg.text)}
+                            title="Copy response to clipboard"
+                            aria-label="Copy response"
+                          >
+                            {copiedMsgId === msg.id ? '✓ Copied' : '📋 Copy'}
+                          </button>
+                        </div>
+                      )}
+
                       <div className="chat-msg-content">
                         {renderFormattedText(msg.text)}
                       </div>
+
+                      {/* Interactive Rich Project Cards */}
+                      {msg.projectCards && msg.projectCards.length > 0 && (
+                        <div className="chat-project-cards-grid">
+                          {msg.projectCards.slice(0, 4).map((p) => (
+                            <div key={p.id} className="chat-mini-project-card">
+                              <div className="mini-card-header">
+                                <span className="mini-card-emoji">{p.emoji}</span>
+                                <div className="mini-card-title-wrap">
+                                  <strong className="mini-card-name">{p.name}</strong>
+                                  <span className="mini-card-tag">{p.tag}</span>
+                                </div>
+                              </div>
+
+                              <p className="mini-card-summary">{p.summary}</p>
+
+                              <div className="mini-card-tech">
+                                {(p.tech || []).slice(0, 3).map((t, idx) => (
+                                  <span key={idx} className="mini-card-pill">{t}</span>
+                                ))}
+                              </div>
+
+                              <div className="mini-card-links">
+                                {p.demoUrl && (
+                                  <a
+                                    href={p.demoUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="mini-card-btn mini-card-btn--demo"
+                                  >
+                                    Live Demo 🌐
+                                  </a>
+                                )}
+                                {p.githubUrl && (
+                                  <a
+                                    href={p.githubUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="mini-card-btn mini-card-btn--github"
+                                  >
+                                    GitHub 🐙
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
                       {/* Interactive Actions inside the message */}
                       {msg.actions && msg.actions.length > 0 && (
@@ -391,7 +617,7 @@ export default function Chatbot({ initialOpen = false }) {
                       {/* Quick Prompt Suggestions attached to this message */}
                       {msg.suggestions && msg.suggestions.length > 0 && (
                         <div className="chat-suggestions-wrap">
-                          <span className="suggestions-label">Suggested questions:</span>
+                          <span className="suggestions-label">Suggested prompts:</span>
                           <div className="chat-suggestions-chips">
                             {msg.suggestions.map((sug, sIdx) => (
                               <button
@@ -427,6 +653,7 @@ export default function Chatbot({ initialOpen = false }) {
                         <span></span>
                         <span></span>
                       </div>
+                      <span className="typing-text">Somesh AI is writing...</span>
                     </div>
                   </div>
                 )}
@@ -434,7 +661,7 @@ export default function Chatbot({ initialOpen = false }) {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Quick Quick-Prompt Drawer */}
+              {/* Quick Prompt Drawer */}
               <div className="chatbot-quick-bar" aria-label="Quick questions">
                 <button
                   type="button"
@@ -446,6 +673,13 @@ export default function Chatbot({ initialOpen = false }) {
                 <button
                   type="button"
                   className="quick-bar-chip"
+                  onClick={() => handleSendMessage('Which projects have live demos?')}
+                >
+                  🌐 Live Demos
+                </button>
+                <button
+                  type="button"
+                  className="quick-bar-chip"
                   onClick={() => handleSendMessage('What are your skills and tech stack?')}
                 >
                   🛠️ Skills
@@ -453,9 +687,9 @@ export default function Chatbot({ initialOpen = false }) {
                 <button
                   type="button"
                   className="quick-bar-chip"
-                  onClick={() => handleSendMessage('Are you looking for an internship?')}
+                  onClick={() => handleSendMessage('Why should we hire Someshwar?')}
                 >
-                  💼 Internship Status
+                  💼 Why Hire?
                 </button>
                 <button
                   type="button"
@@ -463,6 +697,13 @@ export default function Chatbot({ initialOpen = false }) {
                   onClick={() => handleSendMessage('How can I contact Someshwar?')}
                 >
                   📫 Contact
+                </button>
+                <button
+                  type="button"
+                  className="quick-bar-chip"
+                  onClick={() => handleSendMessage('Tell me a fun fact about Someshwar')}
+                >
+                  🎲 Fun Fact
                 </button>
               </div>
 
@@ -481,8 +722,8 @@ export default function Chatbot({ initialOpen = false }) {
                     className="chatbot-input"
                     placeholder={
                       isListening
-                        ? 'Listening to your voice...'
-                        : 'Ask about projects, skills, internship...'
+                        ? '🎙️ Listening... speak now'
+                        : 'Ask about projects, stack, internship, contact...'
                     }
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}

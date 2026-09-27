@@ -109,7 +109,8 @@ export const SOMESHWAR_DATA = {
   contact: {
     github: 'https://github.com/someshwar-songara',
     linkedin: 'https://www.linkedin.com/in/someshwar-songara/',
-    emailNote: 'You can use the direct contact form right on this website, or connect on LinkedIn and GitHub!',
+    email: 'someshwarsongara@gmail.com',
+    emailNote: 'Reach out via email at someshwarsongara@gmail.com or use the contact form below!',
     formAvailable: true,
   },
   whatIBring: [
@@ -118,11 +119,18 @@ export const SOMESHWAR_DATA = {
     { title: 'Software Engineering Fundamentals', desc: 'Strong foundation in OOP, data structures, algorithms, and clean architecture.' },
     { title: 'Continuous Learner', desc: 'Actively exploring modern web frameworks, native Android, and edge AI/LLM technologies.' },
   ],
+  recruiterQuickFacts: {
+    availability: 'Immediate availability for Summer/Fall 2025-2026 internships & junior engineering roles',
+    workType: 'Open to Remote, Hybrid, or On-site worldwide',
+    coreStrengths: ['Full-stack Web (React, Node, PHP)', 'Native Android (Java, Firebase)', 'Database Design (MySQL)', 'Fast self-directed learner'],
+    education: 'B.Tech CSE @ MIT Ujjain (2025-2028) + CS Diploma (2022-2025)',
+  },
   funFacts: [
-    'Someshwar enjoys designing tactile, tactile-feeling interfaces — like the sticky-note dev-journal design of this portfolio!',
+    'Someshwar enjoys designing tactile interfaces — like the sticky-note dev-journal design of this portfolio!',
     'He built a complete Hospital Management system from scratch with PHP and MySQL during his diploma.',
     'He is experimenting with local open-source LLMs so that AI assistants can run offline without sending data to third parties.',
     'When not coding, Someshwar loves exploring new developer tools, open-source repositories, and tech trends.',
+    'He prefers practical project-based learning over endless tutorial video marathons!',
   ],
 };
 
@@ -130,17 +138,22 @@ export const SOMESHWAR_DATA = {
 export const WELCOME_MESSAGE = {
   id: 'msg-welcome',
   sender: 'bot',
-  text: `👋 **Hi there! I'm Somesh AI**, Someshwar Songara's digital assistant.
+  text: `👋 **Hi there! I'm Somesh AI**, Someshwar's interactive assistant.
 
-I can tell you everything about Someshwar's **projects**, **skills**, **education**, **internship availability**, and how to contact him.
+I can help you explore:
+- 🚀 **Projects** (IP Chat, Hospital 2.0, Weather App, Jarvis AI)
+- 🛠️ **Skills & Stack** (React, Java, Python, Android, PHP)
+- 💼 **Internship & Hiring** (Available Summer/Fall 2025-2026!)
+- 🎓 **Education & Background** (B.Tech CSE @ MIT Ujjain)
+- 📫 **Contact & Socials**
 
-What would you like to know?`,
+Feel free to ask a question, use voice input 🎙️, or choose a quick prompt below!`,
   suggestions: [
     '👨‍💻 Who is Someshwar?',
-    '🚀 What projects has he built?',
-    '🛠️ What are his tech skills?',
-    '💼 Is he available for internships?',
-    '🎓 Education & Background',
+    '🚀 Show top projects',
+    '🛠️ What are his skills?',
+    '💼 Why should we hire him?',
+    '🎓 Tell me about his education',
     '📫 How can I contact him?',
   ],
   timestamp: new Date(),
