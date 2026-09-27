@@ -267,7 +267,7 @@ export default function Chatbot({ initialOpen = false }) {
 
         setMessages((prev) => [...prev, botMsg]);
       } catch (err) {
-        console.error('Bot generation error:', err);
+        console.error('Error in bot response:', err);
       } finally {
         setIsTyping(false);
         playBotSound('receive', isMuted);
@@ -276,7 +276,7 @@ export default function Chatbot({ initialOpen = false }) {
       if (!isOpen) {
         setUnreadCount((c) => c + 1);
       }
-    }, 250);
+    }, 200);
   };
 
   const handleKeyDown = (e) => {

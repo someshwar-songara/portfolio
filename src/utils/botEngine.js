@@ -54,8 +54,8 @@ export function playBotSound(type = 'receive', muted = false) {
 }
 
 /**
- * Main response generator: Uses Google Gemini AI as primary brain,
- * with local knowledge engine as instant fallback.
+ * Primary response generator: Powered by Google Gemini AI (gemini-flash-latest)
+ * with automatic fallback to verified local knowledge base.
  */
 export async function generateBotResponse(userInput, chatHistory = []) {
   try {
@@ -72,7 +72,7 @@ export async function generateBotResponse(userInput, chatHistory = []) {
 }
 
 /**
- * Verified local fallback response generator for Someshwar's Portfolio Assistant
+ * Local fallback response generator for Someshwar's Portfolio Assistant
  */
 export function generateLocalBotResponse(userInput, chatHistory = []) {
   const query = (userInput || '').toLowerCase().trim();
