@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { getProjectEmoji } from '../data/projects';
 
 // Helper to provide tech icons for visual distinction
@@ -28,8 +27,6 @@ export default function Projects({
   syncNow = () => {},
   rateLimitReset = null,
 }) {
-  const [activeFilter, setActiveFilter] = useState('all');
-
   const formatTime = (ts) => {
     if (!ts) return '';
     try {
@@ -46,45 +43,6 @@ export default function Projects({
     }
     return 'Live sync connected to GitHub API. Click to refresh projects.';
   };
-
-  const filterCategories = [
-    { id: 'all', label: 'All Projects', emoji: '📌' },
-    { id: 'web', label: 'Web Apps', emoji: '🌐' },
-    { id: 'android', label: 'Android', emoji: '📱' },
-    { id: 'ai', label: 'AI & Systems', emoji: '🤖' },
-  ];
-
-  const matchesFilter = (project, filter) => {
-    if (filter === 'all') return true;
-    const tag = (project.tag || '').toLowerCase();
-    const name = (project.name || '').toLowerCase();
-    const tech = (project.tech || []).join(' ').toLowerCase();
-
-    if (filter === 'web') {
-      return (
-        tag.includes('web') ||
-        tag.includes('personal') ||
-        tech.includes('react') ||
-        tech.includes('php') ||
-        tech.includes('javascript')
-      );
-    }
-    if (filter === 'android') {
-      return tag.includes('android') || tech.includes('android') || tech.includes('java');
-    }
-    if (filter === 'ai') {
-      return (
-        tag.includes('ai') ||
-        tag.includes('construction') ||
-        tech.includes('python') ||
-        tech.includes('llm') ||
-        name.includes('jarvis')
-      );
-    }
-    return true;
-  };
-
-  const filteredProjects = projects.filter((p) => matchesFilter(p, activeFilter));
 
   return (
     <section id="projects" className="section section--cork" aria-label="Projects">
@@ -125,32 +83,10 @@ export default function Projects({
           <p className="section-note section-note--light">
             Real code. Real problems. Practical engineering projects from full-stack web to mobile &amp; edge AI.
           </p>
-
-          {/* Interactive Category Filter Pills */}
-          <div className="projects-filter-bar" role="tablist" aria-label="Filter projects by category">
-            {filterCategories.map((cat) => {
-              const count = projects.filter((p) => matchesFilter(p, cat.id)).length;
-              const isActive = activeFilter === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  className={`project-filter-pill ${isActive ? 'project-filter-pill--active' : ''}`}
-                  onClick={() => setActiveFilter(cat.id)}
-                >
-                  <span className="filter-pill-emoji" aria-hidden="true">{cat.emoji}</span>
-                  <span className="filter-pill-label">{cat.label}</span>
-                  <span className="filter-pill-count">{count}</span>
-                </button>
-              );
-            })}
-          </div>
         </header>
 
         <div className="projects-grid">
-          {filteredProjects.map((project, i) => (
+          {projects.map((project, i) => (
             <article
               key={`${project.name}-${i}`}
               className={`project-card ${project.color || 'sticky-yellow'}${

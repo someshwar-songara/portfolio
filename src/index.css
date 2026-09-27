@@ -3863,62 +3863,6 @@ body[data-theme="dark"] .info-card-tape {
   border-color: rgba(255, 255, 255, 0.22);
 }
 
-/* ── Projects Section Filter Tabs ── */
-.projects-filter-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  margin: 1.5rem auto 0;
-  max-width: 600px;
-}
-.project-filter-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-family: var(--font-ui);
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 0.38rem 0.95rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  cursor: pointer;
-  transition: all 0.22s ease;
-  backdrop-filter: blur(8px);
-}
-.project-filter-pill:hover {
-  background: rgba(255, 255, 255, 0.22);
-  transform: translateY(-1.5px);
-  border-color: rgba(255, 255, 255, 0.4);
-}
-.project-filter-pill--active {
-  background: #ffffff !important;
-  color: #1c1917 !important;
-  border-color: #ffffff !important;
-  font-weight: 700;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
-  transform: translateY(-1px);
-}
-.filter-pill-count {
-  font-size: 0.72rem;
-  padding: 0.1rem 0.45rem;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.15);
-  line-height: 1.2;
-}
-.project-filter-pill--active .filter-pill-count {
-  background: rgba(28, 25, 23, 0.12);
-  color: #1c1917;
-}
-body[data-theme="dark"] .project-filter-pill--active {
-  background: #f8fafc !important;
-  color: #0f172a !important;
-  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
-}
-
 /* ── Live Demo Dot Indicator ── */
 .live-demo-dot {
   width: 6.5px;
