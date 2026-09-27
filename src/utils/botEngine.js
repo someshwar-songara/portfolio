@@ -1,4 +1,5 @@
 import { SOMESHWAR_DATA } from '../data/botKnowledge';
+import { askGemini } from '../services/geminiBot';
 
 // Web Audio API lightweight sound effects (zero external files required)
 let audioCtx = null;
@@ -23,16 +24,14 @@ export function playBotSound(type = 'receive', muted = false) {
     const now = audioCtx.currentTime;
 
     if (type === 'receive') {
-      // Gentle double chime (E5 -> B5)
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(659.25, now); // E5
-      osc.frequency.exponentialRampToValueAtTime(987.77, now + 0.08); // B5
+      osc.frequency.setValueAtTime(659.25, now);
+      osc.frequency.exponentialRampToValueAtTime(987.77, now + 0.08);
       gain.gain.setValueAtTime(0.04, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
       osc.start(now);
       osc.stop(now + 0.22);
     } else if (type === 'send') {
-      // Subtle click/blip
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(440, now);
       osc.frequency.exponentialRampToValueAtTime(554.37, now + 0.05);
@@ -41,7 +40,6 @@ export function playBotSound(type = 'receive', muted = false) {
       osc.start(now);
       osc.stop(now + 0.1);
     } else if (type === 'pop') {
-      // Soft pop on toggle open
       osc.type = 'sine';
       osc.frequency.setValueAtTime(300, now);
       osc.frequency.exponentialRampToValueAtTime(600, now + 0.06);
@@ -51,14 +49,32 @@ export function playBotSound(type = 'receive', muted = false) {
       osc.stop(now + 0.15);
     }
   } catch {
-    // Audio context may fail if blocked by browser policy; safely ignore
+    // safely ignore
   }
 }
 
 /**
- * Intelligent response generator for Someshwar's Portfolio Assistant
+ * Main response generator: Uses Google Gemini AI as primary brain,
+ * with local knowledge engine as instant fallback.
  */
-export function generateBotResponse(userInput, chatHistory = []) {
+export async function generateBotResponse(userInput, chatHistory = []) {
+  try {
+    const geminiRes = await askGemini(userInput, chatHistory);
+    if (geminiRes && geminiRes.text) {
+      return geminiRes;
+    }
+  } catch (err) {
+    console.warn('Gemini AI unavailable, using verified local fallback:', err?.message || err);
+  }
+
+  // Graceful fallback to verified local knowledge base
+  return generateLocalBotResponse(userInput, chatHistory);
+}
+
+/**
+ * Verified local fallback response generator for Someshwar's Portfolio Assistant
+ */
+export function generateLocalBotResponse(userInput, chatHistory = []) {
   const query = (userInput || '').toLowerCase().trim();
   const clean = query.replace(/[^\w\s]/gi, ' ').replace(/\s+/g, ' ');
 

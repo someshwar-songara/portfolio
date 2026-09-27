@@ -250,29 +250,33 @@ export default function Chatbot({ initialOpen = false }) {
     setInputValue('');
     setIsTyping(true);
 
-    const delay = Math.min(850, Math.max(350, query.length * 18));
+    setTimeout(async () => {
+      try {
+        const responseData = await generateBotResponse(query, messages);
 
-    setTimeout(() => {
-      const responseData = generateBotResponse(query, messages);
+        const botMsg = {
+          id: `bot-${Date.now()}`,
+          sender: 'bot',
+          text: responseData.text,
+          suggestions: responseData.suggestions || [],
+          actions: responseData.actions || [],
+          projectCards: responseData.projectCards || [],
+          isGemini: responseData.isGemini || false,
+          timestamp: new Date(),
+        };
 
-      const botMsg = {
-        id: `bot-${Date.now()}`,
-        sender: 'bot',
-        text: responseData.text,
-        suggestions: responseData.suggestions || [],
-        actions: responseData.actions || [],
-        projectCards: responseData.projectCards || [],
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, botMsg]);
-      setIsTyping(false);
-      playBotSound('receive', isMuted);
+        setMessages((prev) => [...prev, botMsg]);
+      } catch (err) {
+        console.error('Bot generation error:', err);
+      } finally {
+        setIsTyping(false);
+        playBotSound('receive', isMuted);
+      }
 
       if (!isOpen) {
         setUnreadCount((c) => c + 1);
       }
-    }, delay);
+    }, 250);
   };
 
   const handleKeyDown = (e) => {
@@ -429,9 +433,9 @@ export default function Chatbot({ initialOpen = false }) {
               <div className="chatbot-header-info">
                 <h3 id="chatbot-heading" className="chatbot-header-title">
                   Somesh AI
-                  <span className="chatbot-header-tag">Interactive Assistant</span>
+                  <span className="chatbot-header-tag">Gemini AI ✨</span>
                 </h3>
-                <p className="chatbot-header-sub">Dev Journal Knowledge Hub</p>
+                <p className="chatbot-header-sub">Ask anything about Someshwar</p>
               </div>
             </div>
 
