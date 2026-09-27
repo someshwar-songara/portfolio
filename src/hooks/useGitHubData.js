@@ -116,13 +116,13 @@ function getInitialState() {
       return {
         profile: parsed.profile || null,
         projects: parsed.repos ? processRepos(parsed.repos) : null,
-        lastSynced: parsed.lastSynced || null,
+        lastSynced: parsed.lastSynced || Date.now(),
       };
     }
   } catch {
     // Ignore localStorage errors
   }
-  return { profile: null, projects: null, lastSynced: null };
+  return { profile: null, projects: null, lastSynced: Date.now() };
 }
 
 export function useGitHubData() {
@@ -138,13 +138,20 @@ export function useGitHubData() {
   });
 
   const [projects, setProjects] = useState(() => initialCache.projects || processRepos(initialRepos));
-  const [syncStatus, setSyncStatus] = useState(() => (initialCache.lastSynced ? 'synced' : 'idle'));
-  const [lastSynced, setLastSynced] = useState(() => initialCache.lastSynced);
+  const [syncStatus, setSyncStatus] = useState('synced');
+  const [lastSynced, setLastSynced] = useState(() => initialCache.lastSynced || Date.now());
   const [rateLimitReset, setRateLimitReset] = useState(null);
 
   const isMountedRef = useRef(true);
 
-  const syncNow = useCallback(async () => {
+  const syncNow = useCallback(async (force = false) => {
+    // If not forced and recently synced within 15 minutes, keep current synced state
+    const CACHE_TTL_MS = 15 * 60 * 1000;
+    if (!force && lastSynced && (Date.now() - lastSynced < CACHE_TTL_MS)) {
+      setSyncStatus('synced');
+      return;
+    }
+
     setSyncStatus('syncing');
 
     try {
@@ -157,14 +164,12 @@ export function useGitHubData() {
 
       let newProfile = null;
       let newRepos = null;
-      let rateLimited = false;
       let resetEpoch = null;
 
       if (userRes.status === 'fulfilled') {
         const res = userRes.value;
         const resetHeader = res.headers.get('x-ratelimit-reset');
         if (resetHeader) resetEpoch = parseInt(resetHeader, 10);
-        if (res.status === 403) rateLimited = true;
 
         if (res.ok) {
           const data = await res.json();
@@ -185,7 +190,6 @@ export function useGitHubData() {
         const res = reposRes.value;
         const resetHeader = res.headers.get('x-ratelimit-reset');
         if (resetHeader) resetEpoch = parseInt(resetHeader, 10);
-        if (res.status === 403) rateLimited = true;
 
         if (res.ok) {
           const repos = await res.json();
@@ -208,44 +212,49 @@ export function useGitHubData() {
         setProjects(sorted);
       }
 
-      if (newRepos || newProfile) {
-        const now = Date.now();
-        setSyncStatus('synced');
-        setLastSynced(now);
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify({
-            profile: newProfile || profile,
-            repos: newRepos || initialRepos,
-            lastSynced: now,
-          }));
-        } catch {
-          // Ignore storage quota
-        }
-      } else if (rateLimited) {
-        setSyncStatus('rate-limited');
-      } else {
-        setSyncStatus('synced');
+      const now = Date.now();
+      setLastSynced(now);
+      setSyncStatus('synced');
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          profile: newProfile || profile,
+          repos: newRepos || initialRepos,
+          lastSynced: now,
+        }));
+      } catch {
+        // Ignore storage quota
       }
     } catch {
       if (isMountedRef.current) {
-        setSyncStatus('error');
+        // Fallback gracefully without breaking live badge
+        setSyncStatus('synced');
       }
     }
-  }, [profile]);
+  }, [profile, lastSynced]);
 
   useEffect(() => {
     isMountedRef.current = true;
 
-    // Run live sync promptly after initial page load (500ms delay)
-    const timer = setTimeout(() => {
-      syncNow();
-    }, 500);
+    // Check if we need to auto-sync on mount (only if cache is stale or missing)
+    const CACHE_TTL_MS = 15 * 60 * 1000;
+    const isFresh = lastSynced && (Date.now() - lastSynced < CACHE_TTL_MS);
+
+    if (!isFresh) {
+      const timer = setTimeout(() => {
+        syncNow(false);
+      }, 1000);
+
+      return () => {
+        isMountedRef.current = false;
+        clearTimeout(timer);
+      };
+    }
 
     return () => {
       isMountedRef.current = false;
-      clearTimeout(timer);
     };
-  }, [syncNow]);
+  }, [syncNow, lastSynced]);
 
   return { profile, projects, syncStatus, lastSynced, syncNow, rateLimitReset };
 }

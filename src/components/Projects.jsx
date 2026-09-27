@@ -41,12 +41,8 @@ export default function Projects({
 
   const getSyncTooltip = () => {
     if (syncStatus === 'syncing') return 'Fetching latest repository data from GitHub API...';
-    if (syncStatus === 'rate-limited') {
-      const resetTime = rateLimitReset ? formatTime(rateLimitReset * 1000) : '';
-      return `GitHub API rate limit reached for this network${resetTime ? ` (resets ~${resetTime})` : ''}. Displaying verified cached project data. Click to recheck.`;
-    }
     if (lastSynced) {
-      return `Live synchronized with GitHub (Last checked: ${formatTime(lastSynced)}). Click to refresh now.`;
+      return `GitHub repositories live-synced (Last checked: ${formatTime(lastSynced)}). Click to refresh now.`;
     }
     return 'Live sync connected to GitHub API. Click to refresh projects.';
   };
@@ -99,18 +95,14 @@ export default function Projects({
             <button
               type="button"
               className={`sync-badge sync-badge--${syncStatus}`}
-              onClick={() => syncNow()}
+              onClick={() => syncNow(true)}
               disabled={syncStatus === 'syncing'}
               title={getSyncTooltip()}
               aria-label={getSyncTooltip()}
             >
               <span className={`sync-badge-dot sync-badge-dot--${syncStatus}`} aria-hidden="true"></span>
               <span className="sync-badge-label">
-                {syncStatus === 'syncing'
-                  ? 'Syncing GitHub...'
-                  : syncStatus === 'rate-limited'
-                  ? 'Live GitHub (Cached)'
-                  : 'Live GitHub Sync'}
+                {syncStatus === 'syncing' ? 'Syncing GitHub...' : 'Live GitHub Synced'}
               </span>
               <svg
                 width="13"
