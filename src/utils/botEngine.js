@@ -1,5 +1,4 @@
 import { SOMESHWAR_DATA } from '../data/botKnowledge';
-import { askGemini } from '../services/geminiBot';
 
 // Web Audio API lightweight sound effects (zero external files required)
 let audioCtx = null;
@@ -54,20 +53,10 @@ export function playBotSound(type = 'receive', muted = false) {
 }
 
 /**
- * Primary response generator: Powered by Google Gemini AI (gemini-flash-latest)
- * with automatic fallback to verified local knowledge base.
+ * Primary response generator: Powered directly by Somesh AI.
+ * Fast, reliable, zero external API keys required, and customized for Someshwar's portfolio.
  */
 export async function generateBotResponse(userInput, chatHistory = []) {
-  try {
-    const geminiRes = await askGemini(userInput, chatHistory);
-    if (geminiRes && geminiRes.text) {
-      return geminiRes;
-    }
-  } catch (err) {
-    console.warn('Gemini AI unavailable, using verified local fallback:', err?.message || err);
-  }
-
-  // Graceful fallback to verified local knowledge base
   return generateLocalBotResponse(userInput, chatHistory);
 }
 
@@ -152,6 +141,97 @@ Currently seeking a **Summer/Fall Software Engineering Internship** where he can
       actions: [
         { label: 'Read Full Journal', type: 'scroll', target: 'about', icon: '📖' },
         { label: 'See Projects', type: 'scroll', target: 'projects', icon: '📂' },
+      ],
+    };
+  }
+
+  // 2.1. WHAT CAN YOU DO / HELP / CAPABILITIES
+  if (
+    containsAny([
+      'what can you do',
+      'help',
+      'how do you work',
+      'what do you know',
+      'options',
+      'menu',
+      'commands',
+      'capabilities',
+      'features',
+    ])
+  ) {
+    return {
+      text: `🤖 **I'm Somesh AI — Someshwar's Official Portfolio Assistant!**
+
+Here is what you can ask me:
+- 🚀 **Projects:** Learn about IP Chat, Hospital 2.0, Weather App, Jarvis AI, and Academic Diary.
+- 🛠️ **Tech Skills:** In-depth info on Java, Python, React, Android, PHP, MySQL, and C++.
+- 💼 **Recruitment:** Check internship status, role preferences, and why you should hire him.
+- 🎓 **Education:** Details on his B.Tech @ MIT Ujjain and CS Diploma.
+- 📫 **Contact & Socials:** Quick links to email, LinkedIn, and GitHub.
+- 📄 **Resume / CV:** How to get his latest resume.
+
+What would you like to explore?`,
+      suggestions: [
+        '🚀 Show me his projects',
+        '🛠️ What are his skills?',
+        '💼 Is he available for an internship?',
+        '📫 How do I contact him?',
+      ],
+      actions: [
+        { label: 'View Projects', type: 'scroll', target: 'projects', icon: '🚀' },
+        { label: 'Contact Someshwar', type: 'scroll', target: 'contact', icon: '📬' },
+      ],
+    };
+  }
+
+  // 2.2. WHO MADE YOU / CREATOR
+  if (
+    containsAny([
+      'who made you',
+      'who created you',
+      'who built you',
+      'who developed you',
+      'who is your creator',
+      'your author',
+    ])
+  ) {
+    return {
+      text: `👨‍💻 **I was handcrafted by Someshwar Songara!**
+
+Someshwar built me as a dedicated, lightweight interactive portfolio assistant to help recruiters and visitors learn about his projects, skills, and background with zero latency.`,
+      suggestions: ['👨‍💻 Tell me more about Someshwar', '🚀 Show me his projects', '📫 Contact Someshwar'],
+      actions: [
+        { label: 'About Someshwar', type: 'scroll', target: 'about', icon: '📖' },
+        { label: 'Get in Touch', type: 'scroll', target: 'contact', icon: '✉️' },
+      ],
+    };
+  }
+
+  // 2.3. THANK YOU / GOODBYE
+  if (
+    containsAny([
+      'thank you',
+      'thanks',
+      'thx',
+      'thank u',
+      'appreciate',
+      'bye',
+      'goodbye',
+      'see you',
+      'cya',
+      'awesome',
+      'great job',
+      'good bot',
+    ])
+  ) {
+    return {
+      text: `😊 **You're very welcome!**
+
+Thank you for visiting Someshwar's portfolio. Feel free to explore his projects, check out his code on GitHub, or drop him a message anytime!`,
+      suggestions: ['🚀 Show projects one more time', '📫 Leave a message in contact form', '💼 View LinkedIn'],
+      actions: [
+        { label: 'Open Contact Form', type: 'scroll', target: 'contact', icon: '✉️' },
+        { label: 'View GitHub', type: 'link', url: SOMESHWAR_DATA.contact.github, icon: '🐙' },
       ],
     };
   }
@@ -282,6 +362,38 @@ Check out the interactive cards below:`,
       actions: [
         { label: 'Launch IP Chat 🚀', type: 'link', url: 'https://ip-chat-rho.vercel.app', icon: '🌐' },
         { label: 'View on GitHub', type: 'link', url: SOMESHWAR_DATA.contact.github, icon: '🐙' },
+      ],
+    };
+  }
+
+  // 7.6. SPECIFIC PROJECT: DEV JOURNAL PORTFOLIO
+  if (
+    containsAny([
+      'portfolio project',
+      'this website',
+      'this site',
+      'this portfolio',
+      'dev journal',
+      'corkboard',
+      'how this was made',
+      'portfolio repo',
+    ])
+  ) {
+    const proj = SOMESHWAR_DATA.projects.find((p) => p.id === 'portfolio');
+    return {
+      text: `🌐 **Personal Portfolio — Dev Journal Aesthetic**
+
+${proj.summary}
+
+🔑 **Key Highlights:**
+- **Stack:** React 18, Vite, pure Vanilla CSS, Canvas Confetti
+- **Features:** Handcrafted tactile corkboard aesthetic, dynamic live GitHub synchronization, dark/light mode toggle, sound effects, and this responsive built-in AI assistant!
+- **Performance:** Optimized for speed with zero bloat and smooth 60fps animations.`,
+      projectCards: [proj],
+      suggestions: ['💬 Tell me about IP Chat', '🏥 Tell me about Hospital 2.0', '🛠️ What skills does he have?'],
+      actions: [
+        { label: 'View Source Code 🐙', type: 'link', url: proj.githubUrl, icon: '⭐' },
+        { label: 'Open Live Demo 🌐', type: 'link', url: proj.demoUrl, icon: '🔗' },
       ],
     };
   }
@@ -422,6 +534,38 @@ Someshwar has practical experience with full-stack server-side scripting:
     };
   }
 
+  // 13.5. SPECIFIC TECH: C / C++
+  if (containsAny(['c++', 'cpp', 'c language', 'c programming'])) {
+    return {
+      text: `⚙️ **Someshwar's C / C++ Knowledge**
+
+- Solid understanding of systems programming fundamentals in **C and C++**.
+- Core concepts: Memory management, pointers, object-oriented design in C++, and core data structures (arrays, linked lists, stacks, queues).
+- Refined through rigorous academic coursework in both his Diploma and B.Tech.`,
+      suggestions: ['🛠️ Show all programming languages', '🚀 View his projects', '🎓 Tell me about his education'],
+      actions: [
+        { label: 'See Skills', type: 'scroll', target: 'skills', icon: '🎯' },
+        { label: 'View Projects', type: 'scroll', target: 'projects', icon: '🚀' },
+      ],
+    };
+  }
+
+  // 13.6. SPECIFIC TECH: GIT & GITHUB
+  if (containsAny(['git', 'github', 'version control', 'repos', 'repositories', 'open source'])) {
+    return {
+      text: `🐙 **Someshwar's Git & GitHub Workflow**
+
+- **Version Control:** Daily usage of Git for branching, committing, pull requests, and clean commit hygiene.
+- **Repositories:** Active open-source repositories including IP Chat, Hospital 2.0, Academic Diary, and this Portfolio.
+- **Deployments:** Continuous automated web deployments configured with Vercel and GitHub.`,
+      suggestions: ['🚀 Show top repositories', '💬 Tell me about IP Chat', '📫 How do I contact him?'],
+      actions: [
+        { label: 'Visit Someshwar\'s GitHub', type: 'link', url: SOMESHWAR_DATA.contact.github, icon: '🐙' },
+        { label: 'View Projects on Page', type: 'scroll', target: 'projects', icon: '📂' },
+      ],
+    };
+  }
+
   // 14. INTERNSHIP / HIRE / AVAILABILITY / JOB
   if (
     containsAny([
@@ -466,6 +610,23 @@ Would you like to get in touch with Someshwar or explore his code?`,
         { label: 'Open Contact Form', type: 'scroll', target: 'contact', icon: '✉️' },
         { label: 'Connect on LinkedIn', type: 'link', url: SOMESHWAR_DATA.contact.linkedin, icon: '💼' },
         { label: 'Check GitHub Code', type: 'link', url: SOMESHWAR_DATA.contact.github, icon: '🐙' },
+      ],
+    };
+  }
+
+  // 14.5. RELOCATION / JOINING DATE / NOTICE PERIOD
+  if (containsAny(['immediate', 'notice period', 'when can he start', 'start date', 'relocate', 'relocation', 'joining', 'join immediately'])) {
+    return {
+      text: `⚡ **Availability, Relocation & Start Date**
+
+- **Joining Date:** Available **immediately** for Summer/Fall 2025–2026 internships or junior software engineering roles!
+- **Notice Period:** None (Immediate joinee).
+- **Relocation:** 100% open to **Relocation** for on-site roles, as well as **Remote** or **Hybrid** setups worldwide.
+- **Location:** Based in Ujjain, Madhya Pradesh, India (IST, UTC+5:30).`,
+      suggestions: ['💼 Why should we hire him?', '📫 Send an internship message', '📄 Can I see his resume?'],
+      actions: [
+        { label: 'Jump to Contact Form', type: 'scroll', target: 'contact', icon: '✉️' },
+        { label: 'LinkedIn Profile', type: 'link', url: SOMESHWAR_DATA.contact.linkedin, icon: '💼' },
       ],
     };
   }

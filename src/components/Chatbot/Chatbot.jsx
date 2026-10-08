@@ -261,7 +261,6 @@ export default function Chatbot({ initialOpen = false }) {
           suggestions: responseData.suggestions || [],
           actions: responseData.actions || [],
           projectCards: responseData.projectCards || [],
-          isGemini: responseData.isGemini || false,
           timestamp: new Date(),
         };
 
@@ -433,7 +432,6 @@ export default function Chatbot({ initialOpen = false }) {
               <div className="chatbot-header-info">
                 <h3 id="chatbot-heading" className="chatbot-header-title">
                   Somesh AI
-                  <span className="chatbot-header-tag">Gemini AI ✨</span>
                 </h3>
                 <p className="chatbot-header-sub">Ask anything about Someshwar</p>
               </div>
