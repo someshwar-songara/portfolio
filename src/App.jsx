@@ -19,17 +19,8 @@ const Chatbot = lazy(() => import('./components/Chatbot/Chatbot'));
 export default function App() {
   const { isDark, toggleTheme } = useTheme();
   const { profile, projects, syncStatus, lastSynced, syncNow, rateLimitReset } = useGitHubData();
-  const [renderDeferred, setRenderDeferred] = useState(false);
   const [botLoaded, setBotLoaded] = useState(false);
   const [botInitialOpen, setBotInitialOpen] = useState(false);
-
-  useEffect(() => {
-    // Break up synchronous rendering so initial task finishes in <30ms (zero TBT)
-    const id = requestAnimationFrame(() => {
-      setRenderDeferred(true);
-    });
-    return () => cancelAnimationFrame(id);
-  }, []);
 
   useEffect(() => {
     // Idle preload chatbot after initial paint/interaction
@@ -39,7 +30,7 @@ export default function App() {
       } else {
         setBotLoaded(true);
       }
-    }, 1500);
+    }, 2000);
 
     const onOpenChat = () => {
       setBotInitialOpen(true);
@@ -53,8 +44,8 @@ export default function App() {
     };
   }, []);
 
-  // Re-run scroll observer when projects or deferred sections are rendered
-  useScrollReveal([projects, renderDeferred]);
+  // Scroll reveal observer
+  useScrollReveal([projects]);
 
   const handleLaunchBot = () => {
     setBotInitialOpen(true);
@@ -80,17 +71,13 @@ export default function App() {
           syncNow={syncNow}
           rateLimitReset={rateLimitReset}
         />
-        {renderDeferred && (
-          <>
-            <WhatIBring />
-            <Skills />
-            <Journey />
-            <Contact />
-          </>
-        )}
+        <WhatIBring />
+        <Skills />
+        <Journey />
+        <Contact />
       </main>
 
-      {renderDeferred && <Footer />}
+      <Footer />
       <KonamiEgg />
       
       {!botLoaded ? (
