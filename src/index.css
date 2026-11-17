@@ -22,8 +22,8 @@ body.preload *::after {
 :root {
   /* Fonts */
   --font-hand : 'Caveat', cursive, sans-serif;
-  --font-note : 'Patrick Hand', cursive, sans-serif;
-  --font-ui   : 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-note : 'Caveat', cursive, sans-serif;
+  --font-ui   : 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
   /* Cursor */
   --cursor-dot : #fbbf24;
@@ -942,6 +942,18 @@ body[data-theme="dark"] .theme-icon--moon { display: block; }
 .section {
   padding: 5rem 0;
   position: relative;
+}
+
+/* ── Performance: Defer layout & paint for offscreen sections ── */
+#about,
+#projects,
+#what-i-bring,
+#skills,
+#journey,
+#contact,
+.footer {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 750px;
 }
 
 .container {

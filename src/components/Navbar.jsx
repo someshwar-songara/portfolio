@@ -9,37 +9,34 @@ export default function Navbar({ isDark, toggleTheme }) {
   const resumeUrl = null;
 
   useEffect(() => {
-    let ticking = false;
-    function updateScroll() {
-      const scrollY = window.scrollY;
-      setIsScrolled(scrollY > 32);
-
-      const sectionIds = ['hero', 'about', 'projects', 'skills', 'journey', 'contact'];
-      let current = 'hero';
-      for (const id of sectionIds) {
-        const sec = document.getElementById(id);
-        if (sec) {
-          const rect = sec.getBoundingClientRect();
-          if (rect.top < 120) {
-            current = id;
-          }
-        }
-      }
-      setActiveSection(current);
-      ticking = false;
-    }
-
-    function onScroll() {
-      if (!ticking) {
-        window.requestAnimationFrame(updateScroll);
-        ticking = true;
-      }
-    }
-
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 32);
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
+
+    const sectionIds = ['hero', 'about', 'projects', 'skills', 'journey', 'contact'];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: '-80px 0px -55% 0px',
+        threshold: 0,
+      }
+    );
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
 
     return () => {
       window.removeEventListener('scroll', onScroll);
+      observer.disconnect();
     };
   }, []);
 
