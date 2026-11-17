@@ -2130,6 +2130,38 @@ body[data-theme="dark"] .project-btn--github:hover {
   color: #0f172a !important;
 }
 
+/* Live Demo button contrast specifically for dark theme */
+body[data-theme="dark"] .project-btn--demo {
+  background: #ffffff;
+  color: #0f172a !important;
+  border-color: #0f172a;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+  font-weight: 600;
+}
+body[data-theme="dark"] .project-btn--demo svg {
+  stroke: #0f172a;
+}
+body[data-theme="dark"] .project-btn--demo:hover {
+  background: #e2e8f0;
+  color: #0f172a !important;
+  border-color: #0f172a;
+}
+body[data-theme="dark"] .project-btn--demo:hover svg {
+  stroke: #0f172a;
+}
+
+/* Disabled button contrast specifically for dark theme */
+body[data-theme="dark"] .project-btn--disabled {
+  background: rgba(255, 255, 255, 0.08);
+  color: #94a3b8 !important;
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+}
+body[data-theme="dark"] .project-btn--disabled svg {
+  stroke: #94a3b8;
+  fill: #94a3b8;
+}
+
 body[data-theme="dark"] .hero-ctas .btn-outline {
   background: rgba(255, 255, 255, 0.08);
   color: #f8fafc !important;
