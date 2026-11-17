@@ -1,4 +1,23 @@
+import { useTilt3D } from '../hooks/useTilt3D';
+
+function InfoCardItem({ icon, title, sub, delay }) {
+  const tiltRef = useTilt3D({ max: 6, scale: 1.02, perspective: 800, glare: true });
+  return (
+    <div ref={tiltRef} className={`info-card has-3d-glare reveal reveal-delay-${delay}`}>
+      <div className="info-card-tape" aria-hidden="true"></div>
+      <div className="glare-layer" aria-hidden="true"></div>
+      <span className="info-card-icon" aria-hidden="true">{icon}</span>
+      <div>
+        <p className="info-card-title">{title}</p>
+        <p className="info-card-sub">{sub}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function About() {
+  const journalTiltRef = useTilt3D({ max: 3, scale: 1.008, perspective: 1200, glare: true });
+
   return (
     <section id="about" className="section" aria-label="About Someshwar">
       <div className="container">
@@ -10,7 +29,8 @@ export default function About() {
 
         <div className="about-grid">
           {/* Journal letter */}
-          <article className="journal-entry reveal" aria-label="Personal introduction">
+          <article ref={journalTiltRef} className="journal-entry has-3d-glare reveal" aria-label="Personal introduction">
+            <div className="glare-layer" aria-hidden="true"></div>
             {/* Realistic Binder Holes */}
             <div className="journal-binder-holes" aria-hidden="true">
               <span className="binder-hole"></span>
@@ -46,41 +66,30 @@ export default function About() {
 
           {/* Info cards column */}
           <div className="about-cards" aria-label="Quick facts">
-            <div className="info-card reveal reveal-delay-1">
-              <div className="info-card-tape" aria-hidden="true"></div>
-              <span className="info-card-icon" aria-hidden="true">🎓</span>
-              <div>
-                <p className="info-card-title">B.Tech CSE</p>
-                <p className="info-card-sub">MIT Group of Institutes, Ujjain (2025–2028)</p>
-              </div>
-            </div>
-
-            <div className="info-card reveal reveal-delay-2">
-              <div className="info-card-tape" aria-hidden="true"></div>
-              <span className="info-card-icon" aria-hidden="true">📍</span>
-              <div>
-                <p className="info-card-title">Ujjain, India</p>
-                <p className="info-card-sub">Available Remotely &amp; Relocation</p>
-              </div>
-            </div>
-
-            <div className="info-card reveal reveal-delay-3">
-              <div className="info-card-tape" aria-hidden="true"></div>
-              <span className="info-card-icon" aria-hidden="true">💻</span>
-              <div>
-                <p className="info-card-title">Full-Stack &amp; Android</p>
-                <p className="info-card-sub">React, PHP, Java, JavaScript, MySQL</p>
-              </div>
-            </div>
-
-            <div className="info-card reveal reveal-delay-4">
-              <div className="info-card-tape" aria-hidden="true"></div>
-              <span className="info-card-icon" aria-hidden="true">🤖</span>
-              <div>
-                <p className="info-card-title">AI &amp; Speech Tech</p>
-                <p className="info-card-sub">Python, Local LLMs, Edge Automations</p>
-              </div>
-            </div>
+            <InfoCardItem
+              icon="🎓"
+              title="B.Tech CSE"
+              sub="MIT Group of Institutes, Ujjain (2025–2028)"
+              delay={1}
+            />
+            <InfoCardItem
+              icon="📍"
+              title="Ujjain, India"
+              sub="Available Remotely & Relocation"
+              delay={2}
+            />
+            <InfoCardItem
+              icon="💻"
+              title="Full-Stack & Android"
+              sub="React, PHP, Java, JavaScript, MySQL"
+              delay={3}
+            />
+            <InfoCardItem
+              icon="🤖"
+              title="AI & Speech Tech"
+              sub="Python, Local LLMs, Edge Automations"
+              delay={4}
+            />
           </div>
         </div>
       </div>

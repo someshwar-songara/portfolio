@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { skillsData } from '../data/skills';
+import { useTilt3D } from '../hooks/useTilt3D';
 
 function getSkillLogo(name = '') {
   const n = name.toLowerCase();
@@ -35,8 +36,43 @@ function getSkillClass(name = '') {
   return 'skill-default';
 }
 
+function SkillGroupCard({ group, index }) {
+  const tiltRef = useTilt3D({ max: 6, scale: 1.02, perspective: 900, glare: true });
+
+  return (
+    <div
+      ref={tiltRef}
+      className={`skill-group has-3d-glare reveal reveal-delay-${(index % 3) + 1}`}
+    >
+      <div className="glare-layer" aria-hidden="true"></div>
+      <div className="skill-group-tape" aria-hidden="true"></div>
+      <div className="skill-group-top">
+        <span className="skill-group-icon" aria-hidden="true">
+          {group.icon}
+        </span>
+        <h3 className="skill-group-title">{group.category}</h3>
+        <span className="skill-count-badge">{group.items.length}</span>
+      </div>
+
+      <ul className="skill-chips" aria-label={`${group.category} skills`}>
+        {group.items.map((skill) => (
+          <li
+            key={skill}
+            className={`skill-chip ${getSkillClass(skill)}`}
+            aria-label={skill}
+          >
+            <span className="skill-chip-icon" aria-hidden="true">{getSkillLogo(skill)}</span>
+            <span className="skill-chip-text">{skill}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function Skills() {
   const [activeCategory, setActiveCategory] = useState('all');
+  const highlightsTiltRef = useTilt3D({ max: 3, scale: 1.01, perspective: 1100, glare: true });
 
   const categories = [
     { id: 'all', label: 'All Technologies', icon: '✨' },
@@ -81,33 +117,13 @@ export default function Skills() {
 
         <div className="skills-grid">
           {displayedGroups.map((group, si) => (
-            <div key={group.category} className={`skill-group reveal reveal-delay-${(si % 3) + 1}`}>
-              <div className="skill-group-top">
-                <span className="skill-group-icon" aria-hidden="true">
-                  {group.icon}
-                </span>
-                <h3 className="skill-group-title">{group.category}</h3>
-                <span className="skill-count-badge">{group.items.length}</span>
-              </div>
-
-              <ul className="skill-chips" aria-label={`${group.category} skills`}>
-                {group.items.map((skill) => (
-                  <li
-                    key={skill}
-                    className={`skill-chip ${getSkillClass(skill)}`}
-                    aria-label={skill}
-                  >
-                    <span className="skill-chip-icon" aria-hidden="true">{getSkillLogo(skill)}</span>
-                    <span className="skill-chip-text">{skill}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <SkillGroupCard key={group.category} group={group} index={si} />
           ))}
         </div>
 
-        {/* Tech Highlights Strip */}
-        <div className="skills-highlights-bar reveal">
+        {/* Tech Highlights Strip with 3D Tilt & Glassmorphism */}
+        <div ref={highlightsTiltRef} className="skills-highlights-bar has-3d-glare reveal">
+          <div className="glare-layer" aria-hidden="true"></div>
           <div className="highlight-stat">
             <span className="stat-number">4+</span>
             <span className="stat-label">Years Learning &amp; Coding</span>

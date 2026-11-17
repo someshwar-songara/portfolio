@@ -1,5 +1,12 @@
-export default function Hero({ profile }) {
+import { lazy, Suspense } from 'react';
+import { useTilt3D } from '../hooks/useTilt3D';
+
+const ThreeCanvas = lazy(() => import('./ThreeCanvas'));
+
+export default function Hero({ profile, isDark }) {
   const publicRepos = profile?.public_repos ?? 5;
+  const avatarTiltRef = useTilt3D({ max: 12, scale: 1.04, perspective: 900 });
+  const noteTiltRef = useTilt3D({ max: 8, scale: 1.025, perspective: 1000 });
 
   const scrollToProjects = (e) => {
     e.preventDefault();
@@ -12,7 +19,10 @@ export default function Hero({ profile }) {
   };
 
   return (
-    <section id="hero" aria-label="Introduction">
+    <section id="hero" className="bg-dot-matrix" aria-label="Introduction">
+      <Suspense fallback={null}>
+        <ThreeCanvas isDark={isDark} />
+      </Suspense>
       <div className="hero-ambient-glow hero-ambient-glow--1" aria-hidden="true"></div>
       <div className="hero-ambient-glow hero-ambient-glow--2" aria-hidden="true"></div>
 
@@ -105,7 +115,7 @@ export default function Hero({ profile }) {
         <div className="hero-right">
           <div className="avatar-wrap">
             <div className="avatar-ambient-glow" aria-hidden="true"></div>
-            <div className="avatar-frame avatar-frame--square">
+            <div ref={avatarTiltRef} className="avatar-frame avatar-frame--square has-3d-glare">
               <div className="avatar-pin" aria-hidden="true"></div>
               <picture>
                 <source srcSet="/avatar.webp" type="image/webp" />
@@ -119,13 +129,15 @@ export default function Hero({ profile }) {
                   decoding="async"
                 />
               </picture>
+              <div className="glare-layer" aria-hidden="true"></div>
             </div>
             <span className="avatar-location">📍 Ujjain, MP</span>
           </div>
 
-          <div className="hero-info-note" aria-label="Quick Highlights">
+          <div ref={noteTiltRef} className="hero-info-note has-3d-glare" aria-label="Quick Highlights">
             <div className="hero-note-tape" aria-hidden="true"></div>
             <div className="hero-note-pin" aria-hidden="true"></div>
+            <div className="glare-layer" aria-hidden="true"></div>
             <div className="hero-note-header">
               <span className="hero-note-badge">Quick Profile</span>
               <span className="hero-note-dot"></span>

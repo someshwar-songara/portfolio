@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTilt3D } from '../hooks/useTilt3D';
 
 export default function Contact() {
   const [isSent, setIsSent] = useState(false);
@@ -6,6 +7,8 @@ export default function Contact() {
   const [statusMessage, setStatusMessage] = useState(null);
   const [lastSender, setLastSender] = useState('');
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+
+  const contactTiltRef = useTilt3D({ max: 2.5, scale: 1.008, perspective: 1200, glare: true });
 
   const contactGithub = 'https://github.com/someshwar-songara';
   const contactLinkedin = 'https://www.linkedin.com/in/someshwar-songara/';
@@ -97,7 +100,13 @@ export default function Contact() {
           </p>
         </header>
 
-        <div className="contact-sheet reveal">
+        <div ref={contactTiltRef} className="contact-sheet has-3d-glare reveal">
+          <div className="glare-layer" aria-hidden="true"></div>
+          <div className="contact-postmark" aria-hidden="true">
+            <span className="postmark-city">UJJAIN</span>
+            <span className="postmark-code">IN · 456010</span>
+            <span className="postmark-date">AIRMAIL</span>
+          </div>
           <div className="airmail-strip" aria-hidden="true"></div>
           <div className="contact-grid">
             <div className="contact-inner contact-inner--links">

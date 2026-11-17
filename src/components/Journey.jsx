@@ -1,4 +1,46 @@
 import { timelineData } from '../data/skills';
+import { useTilt3D } from '../hooks/useTilt3D';
+
+function TimelineNoteCard({ event, isCurrent, tags }) {
+  const tiltRef = useTilt3D({ max: 6, scale: 1.025, perspective: 900, glare: true });
+
+  return (
+    <div
+      ref={tiltRef}
+      className={`timeline-note ${isCurrent ? 'timeline-note--active' : ''} has-3d-glare`}
+    >
+      <div className="glare-layer" aria-hidden="true"></div>
+      <div className="timeline-note-tape" aria-hidden="true"></div>
+      <div className="timeline-note-pin" aria-hidden="true"></div>
+
+      <div className="timeline-note-top">
+        <span className="timeline-year">{event.year}</span>
+        {isCurrent ? (
+          <span className="timeline-status-badge timeline-status-badge--active">
+            <span className="timeline-pulse-dot" aria-hidden="true"></span>
+            Currently Pursuing
+          </span>
+        ) : (
+          <span className="timeline-status-badge timeline-status-badge--done">
+            Completed
+          </span>
+        )}
+      </div>
+
+      <h3 className="timeline-title">{event.title}</h3>
+      <p className="timeline-place">📍 {event.place}</p>
+      <p className="timeline-desc">{event.desc}</p>
+
+      {tags.length > 0 && (
+        <div className="timeline-tags">
+          {tags.map((tag) => (
+            <span key={tag} className="timeline-tag-chip">{tag}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Journey() {
   const milestoneTags = {
@@ -25,35 +67,13 @@ export default function Journey() {
                 key={event.title}
                 className={`timeline-item timeline-item--${event.side} reveal reveal-delay-${(ti % 3) + 1}`}
               >
-                {/* Content note */}
+                {/* Content note with 3D Tilt */}
                 <div className="timeline-content">
-                  <div className={`timeline-note ${isCurrent ? 'timeline-note--active' : ''}`}>
-                    <div className="timeline-note-top">
-                      <span className="timeline-year">{event.year}</span>
-                      {isCurrent ? (
-                        <span className="timeline-status-badge timeline-status-badge--active">
-                          <span className="timeline-pulse-dot" aria-hidden="true"></span>
-                          Currently Pursuing
-                        </span>
-                      ) : (
-                        <span className="timeline-status-badge timeline-status-badge--done">
-                          Completed
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="timeline-title">{event.title}</h3>
-                    <p className="timeline-place">📍 {event.place}</p>
-                    <p className="timeline-desc">{event.desc}</p>
-
-                    {tags.length > 0 && (
-                      <div className="timeline-tags">
-                        {tags.map((tag) => (
-                          <span key={tag} className="timeline-tag-chip">{tag}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <TimelineNoteCard
+                    event={event}
+                    isCurrent={isCurrent}
+                    tags={tags}
+                  />
                 </div>
 
                 {/* Centre icon node with animated glow */}

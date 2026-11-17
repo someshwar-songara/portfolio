@@ -8,10 +8,12 @@ export default defineConfig({
     target: 'esnext',
     cssMinify: true,
     minify: 'esbuild',
+    chunkSizeWarningLimit: 650,
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
+          three: ['three'],
         },
       },
     },

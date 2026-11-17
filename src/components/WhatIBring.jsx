@@ -1,4 +1,27 @@
 import { bringCardsData } from '../data/skills';
+import { useTilt3D } from '../hooks/useTilt3D';
+
+function BringCardItem({ card, index }) {
+  const tiltRef = useTilt3D({ max: 8, scale: 1.025, perspective: 900, glare: true });
+
+  return (
+    <div
+      ref={tiltRef}
+      className={`bring-card ${card.color} has-3d-glare reveal reveal-delay-${(index % 4) + 1}`}
+    >
+      <div className="bring-card-tape" aria-hidden="true"></div>
+      <div className="glare-layer" aria-hidden="true"></div>
+      <div className="bring-card-header">
+        <span className="bring-icon" aria-hidden="true">
+          {card.icon}
+        </span>
+        <span className="bring-number">0{index + 1}</span>
+      </div>
+      <h3 className="bring-title">{card.title}</h3>
+      <p className="bring-body">{card.body}</p>
+    </div>
+  );
+}
 
 export default function WhatIBring() {
   return (
@@ -12,20 +35,7 @@ export default function WhatIBring() {
 
         <div className="bring-grid">
           {bringCardsData.map((card, bi) => (
-            <div
-              key={card.title}
-              className={`bring-card ${card.color} reveal reveal-delay-${(bi % 4) + 1}`}
-            >
-              <div className="bring-card-tape" aria-hidden="true"></div>
-              <div className="bring-card-header">
-                <span className="bring-icon" aria-hidden="true">
-                  {card.icon}
-                </span>
-                <span className="bring-number">0{bi + 1}</span>
-              </div>
-              <h3 className="bring-title">{card.title}</h3>
-              <p className="bring-body">{card.body}</p>
-            </div>
+            <BringCardItem key={card.title} card={card} index={bi} />
           ))}
         </div>
       </div>

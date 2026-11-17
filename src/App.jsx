@@ -62,7 +62,7 @@ export default function App() {
       <Navbar isDark={isDark} toggleTheme={toggleTheme} />
 
       <main id="main-content">
-        <Hero profile={profile} />
+        <Hero profile={profile} isDark={isDark} />
         <About />
         <Projects
           projects={projects}
