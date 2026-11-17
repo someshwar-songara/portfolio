@@ -87,14 +87,15 @@
 }
 
 .toast-text span {
-  font-size: 11px;
-  color: var(--ink-light, #78716c);
+  font-size: 11.5px;
+  color: var(--ink-mid, #44403c);
+  font-weight: 500;
 }
 
 .toast-close {
   background: transparent;
   border: none;
-  color: var(--ink-light, #78716c);
+  color: var(--ink-mid, #44403c);
   font-size: 13px;
   cursor: pointer;
   padding: 2px 6px;
@@ -170,8 +171,8 @@
   background: #22c55e;
   border: 2px solid var(--bg-white, #ffffff);
   border-radius: 50%;
-  box-shadow: 0 0 6px rgba(34, 197, 94, 0.7);
   animation: chatbotPulse 2s infinite ease-in-out;
+  will-change: transform, opacity;
 }
 
 @keyframes chatbotPulse {
@@ -181,7 +182,7 @@
   }
   50% {
     transform: scale(1.25);
-    opacity: 0.85;
+    opacity: 0.8;
   }
 }
 

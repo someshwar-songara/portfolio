@@ -200,6 +200,7 @@ export default function Contact() {
                         type="text"
                         name="name"
                         placeholder="Your name"
+                        autoComplete="name"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         required
@@ -212,6 +213,7 @@ export default function Contact() {
                         type="email"
                         name="email"
                         placeholder="you@example.com"
+                        autoComplete="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         required
